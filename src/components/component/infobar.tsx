@@ -63,7 +63,7 @@ const Header = () => {
 
   return (
     <TooltipProvider>
-      <header className="sticky top-0 z-10 w-full bg-background/50 backdrop-blur-lg border-b">
+      <header className="sticky top-0 z-10   w-full bg-background/50 backdrop-blur-lg border-b">
         <div className="container mx-auto px-4 py-2 flex items-center justify-between">
           <h1
             onClick={() => handleExit('/')}
