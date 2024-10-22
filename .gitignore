@@ -7,13 +7,11 @@
 .yarn/install-state.gz
 
 
-.env
 
 # testing
 /coverage
 
 # next.js
-.env.production
 
 /.next/
 /out/
@@ -40,3 +38,4 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+config.bat

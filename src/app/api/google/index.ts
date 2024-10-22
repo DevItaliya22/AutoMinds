@@ -12,7 +12,7 @@ async function getGoogleInstance() {
   // // console.log('Session : ', session);
   // const access_token = session.accessToken;
 
-  const access_token = "ya29.a0AcM612xv4g4vjltyOopCgtgUoP1hHhNL3d4mzMmn0KwKNMYr8AHjHJiHER2SocYIMZcTkja9HU_rv4mtUG_iWnAaB6DoGl07jFcBrNEt427WjobJt1TcBOfVdZwmuqAtij_viLv4tKpU-1_kJCuQnIyIInp32m5cn9k7kXoXaCgYKAToSARISFQHGX2MixgZGipRG9hGzdkpDaQzETQ0175";
+  const access_token = "";
 
   const auth = new google.auth.OAuth2();
   auth.setCredentials({ access_token });
@@ -21,6 +21,32 @@ async function getGoogleInstance() {
   const gmail = google.gmail({ version: "v1", auth });
 
   return { drive, gmail };
+}
+
+//Google watcher
+async function watchUser() {
+  const googleInstance = await getGoogleInstance();
+  if (!googleInstance) {
+    return { error: 'Unauthorized' };
+  }
+  
+  const { gmail } = googleInstance;
+  try {
+    const res = await gmail.users.watch({
+      userId: 'me',
+      requestBody: {
+        topicName: 'projects/zap-436910/topics/gmail-notifications',
+        labelIds: ['INBOX'],
+      },
+    });
+    
+    console.log('Response:', res);
+    console.log('Watcher created');
+    return { res };
+  } catch (error) {
+    console.error(error);
+    return { error: 'Failed to create watcher' };
+  }
 }
 
 // Google mail functions
@@ -437,4 +463,4 @@ async function updateFile(data: { fileId: string, body: string }) {
   }
 }
 
-export { createFile, deleteFile, getAllfiles, readFile, updateFile, addLabel, removeLabel, createLabel, deleteEmail, searchEmails, sendEmail, createAndSendDraftEmail, getGoogleInstance, ListLabels, ListEmails ,listFolders};
+export { createFile, deleteFile, getAllfiles, readFile, updateFile, addLabel, removeLabel, createLabel, deleteEmail, searchEmails, sendEmail, createAndSendDraftEmail, getGoogleInstance, ListLabels, ListEmails ,listFolders,watchUser};

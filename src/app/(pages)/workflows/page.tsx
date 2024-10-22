@@ -1,5 +1,5 @@
 "use client"
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useState, useCallback } from "react"
 import { Search } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
@@ -27,15 +27,16 @@ export default function Workflows() {
   const [searchTerm, setSearchTerm] = useState("")
   const router = useRouter();
 
-  useEffect(() => {
-    async function fetchWorkflows() {
-      const data = await getWorkflows()
-      if (data) {
-        setWorkflows(data)
-      }
+  const fetchWorkflows = useCallback(async () => {
+    const data = await getWorkflows()
+    if (data) {
+      setWorkflows(data)
     }
-    fetchWorkflows()
   }, [])
+
+  useEffect(() => {
+    fetchWorkflows()
+  }, [fetchWorkflows])
 
   const filteredWorkflows = workflows.filter((workflow) =>
     workflow.name.toLowerCase().includes(searchTerm.toLowerCase())
@@ -77,7 +78,7 @@ export default function Workflows() {
                 </div>
               </CardContent>
               <CardFooter>
-                <Button variant="outline" className="w-full" onClick={()=>router.push(`/workflows/${workflow.id}`)}>View Details</Button>
+                <Button variant="outline" className="w-full" onClick={() => router.push(`/workflows/${workflow.id}`)}>View Details</Button>
               </CardFooter>
             </Card>
           ))}
