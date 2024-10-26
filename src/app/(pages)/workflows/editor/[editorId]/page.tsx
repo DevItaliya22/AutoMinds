@@ -14,7 +14,7 @@ import ReactFlow, {
   Edge
 } from 'reactflow'
 import 'reactflow/dist/style.css'
-import { useParams } from 'next/navigation'
+import { useParams, usePathname } from 'next/navigation'
 import { useToast } from "@/hooks/use-toast"
 import { getNodesAndEdges } from '@/app/actions/getNodeAndEdges'
 import { saveWorkflow } from '@/app/actions/saveWorkflow'
@@ -34,6 +34,7 @@ export default function EditorContent() {
   const { editorId } = useParams<{editorId : string}>()
   const [isSaving, setIsSaving] = useState(false)
   const [isFetching, setIsFetching] = useState(true)
+  const workFlowPath = `/workflows/${editorId}`
 
   useEffect(() => {
     const fetchWorkflowData = async () => {
@@ -199,6 +200,7 @@ export default function EditorContent() {
           setSearchTerm={setSearchTerm}
           isSaving={isSaving}
           isFetching={isFetching}
+          workFlowPath={workFlowPath}
         />
       </div>
     </div>

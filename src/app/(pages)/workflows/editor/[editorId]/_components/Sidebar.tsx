@@ -5,6 +5,7 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 import { Input } from "@/components/ui/input"
 import { Database, Github, Mailbox, Search, Loader2 } from 'lucide-react'
 import { TriggerNodes , ActionNodes } from '@/lib/constants'
+import { useRouter } from 'next/navigation'
 
 type SidebarProps = {
   handleSave: () => void
@@ -13,15 +14,16 @@ type SidebarProps = {
   setSearchTerm: (term: string) => void
   isSaving: boolean
   isFetching: boolean
+  workFlowPath : string
 }
 
-export default function Sidebar({ handleSave, hasTrigger, searchTerm, setSearchTerm, isSaving, isFetching }: SidebarProps) {
+export default function Sidebar({ handleSave, hasTrigger, searchTerm, setSearchTerm, isSaving, isFetching ,workFlowPath }: SidebarProps) {
   const onDragStart = (event: DragEvent<HTMLButtonElement>, nodeType: string) => {
     event.dataTransfer.setData('application/reactflow', nodeType)
     event.dataTransfer.effectAllowed = 'move'
   }
 
-
+  const router = useRouter();
   const triggerNodes = TriggerNodes
   const actionNodes = ActionNodes
   const nodesToShow = hasTrigger ? actionNodes : triggerNodes
@@ -29,11 +31,15 @@ export default function Sidebar({ handleSave, hasTrigger, searchTerm, setSearchT
     node.label.toLowerCase().includes(searchTerm.toLowerCase())
   )
 
+  const handleExitEditor = () => {
+    router.push(workFlowPath)
+  }
+
   return (
     <Card className="w-64 h-auto border-l">
       <CardHeader>
         <CardTitle>
-          <div className="border-t border-b py-4">
+          <div className="border-t border-b py-4 flex gap-5">
             <Button onClick={handleSave} disabled={isSaving || isFetching}>
               {isSaving ? (
                 <>
@@ -43,6 +49,11 @@ export default function Sidebar({ handleSave, hasTrigger, searchTerm, setSearchT
               ) : (
                 'Save Workflow'
               )}
+            </Button>
+            <Button onClick={handleExitEditor} disabled={isSaving || isFetching} >
+                <>
+                  Exit Editor
+                </>
             </Button>
           </div>
         </CardTitle>
