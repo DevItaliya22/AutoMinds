@@ -1,27 +1,49 @@
-'use client'
+"use client";
 
-import { useState } from "react"
-import { useParams, useRouter } from "next/navigation"
-import { Button } from "@/components/ui/button"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { ChevronRight, File, Folder } from "lucide-react"
-
-type Action = "new" | "newInFolder" | "update" | "trash"
+import { useState } from "react";
+import { useParams, useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { ChevronRight, File, Folder } from "lucide-react";
+import type { GoogleDriveTriggerActions } from "@/lib/types";
 
 interface ActionOption {
-  value: Action
-  label: string
-  description: string
+  value: GoogleDriveTriggerActions;
+  label: string;
+  description: string;
 }
 
 const actionOptions: ActionOption[] = [
-  { value: "new", label: "New File", description: "Action will be triggered when new file is added" },
-  { value: "newInFolder", label: "New file in folder", description: "Action will be triggered when new file is added in a particular folder" },
-  { value: "update", label: "Updated file in folder", description: "Action will be triggered when file is updated in folder" },
-  { value: "trash", label: "Trashed file in folder", description: "Action will be triggered when file is Trashed in folder" },
-]
+  {
+    value: "new",
+    label: "New File",
+    description: "Action will be triggered when new file is added",
+  },
+  {
+    value: "newInFolder",
+    label: "New file in folder",
+    description:
+      "Action will be triggered when new file is added in a particular folder",
+  },
+  {
+    value: "update",
+    label: "Updated file in folder",
+    description: "Action will be triggered when file is updated in folder",
+  },
+  {
+    value: "trash",
+    label: "Trashed file in folder",
+    description: "Action will be triggered when file is Trashed in folder",
+  },
+];
 
 const mockFileTypes = [
   { value: "any", label: "Any file type" },
@@ -30,48 +52,57 @@ const mockFileTypes = [
   { value: "presentation", label: "Presentation (*.ppt, *.pptx)" },
   { value: "pdf", label: "PDF (*.pdf)" },
   { value: "image", label: "Image (*.jpg, *.png, *.gif)" },
-]
+];
 
 type Props = {
-  steps : number
-}
+  steps: number;
+};
 
-export default function GoogleDriveTrigger({steps}:Props) {
-  const { workFlowSegment } = useParams<{ workFlowSegment: string }>()
-  const router = useRouter()
-  const path = `/workflows/${workFlowSegment}?step=${steps}`
+export default function GoogleDriveTrigger({ steps }: Props) {
+  const { workFlowSegment } = useParams<{ workFlowSegment: string }>();
+  const router = useRouter();
+  const path = `/workflows/${workFlowSegment}?step=${steps}`;
 
-  const [action, setAction] = useState<Action | "">("")
-  const [selectedFolder, setSelectedFolder] = useState<string>("")
-  const [folderPath, setFolderPath] = useState<string[]>([])
-  const [selectedFileType, setSelectedFileType] = useState<string>("any")
-  const [customPattern, setCustomPattern] = useState<string>("")
+  const [action, setAction] = useState<GoogleDriveTriggerActions | "">("");
+  const [selectedFolder, setSelectedFolder] = useState<string>("");
+  const [folderPath, setFolderPath] = useState<string[]>([]);
+  const [selectedFileType, setSelectedFileType] = useState<string>("any");
+  const [customPattern, setCustomPattern] = useState<string>("");
 
-  const mockFolders = ["Documents", "Images", "Projects"]
+  const mockFolders = ["Documents", "Images", "Projects"];
 
   const handleFolderSelect = (folder: string) => {
-    setSelectedFolder(folder)
-    setFolderPath([...folderPath, folder])
-  }
+    setSelectedFolder(folder);
+    setFolderPath([...folderPath, folder]);
+  };
 
   const handleBackFolder = () => {
-    setFolderPath(folderPath.slice(0, -1))
-    setSelectedFolder("")
-  }
+    setFolderPath(folderPath.slice(0, -1));
+    setSelectedFolder("");
+  };
 
-  const handleClick = () =>{
-    router.push(path)
-  }
+  const handleClick = () => {
+    router.push(path);
+  };
 
   return (
     <div className="bg-background p-6 md:p-12">
       <div className="max-w-4xl mx-auto space-y-8">
-        <h1 className="text-3xl font-bold text-primary">Google Drive Trigger</h1>
-        
+        <h1 className="text-3xl font-bold text-primary">
+          Google Drive Trigger
+        </h1>
+
         <div className="space-y-6">
           <div>
-            <Label htmlFor="action" className="text-lg font-semibold">Select an action:</Label>
-            <Select onValueChange={(value) => setAction(value as Action)} value={action}>
+            <Label htmlFor="action" className="text-lg font-semibold">
+              Select an action:
+            </Label>
+            <Select
+              onValueChange={(value) =>
+                setAction(value as GoogleDriveTriggerActions)
+              }
+              value={action}
+            >
               <SelectTrigger id="action" className="w-full mt-2">
                 <SelectValue placeholder="Choose an action" />
               </SelectTrigger>
@@ -81,7 +112,9 @@ export default function GoogleDriveTrigger({steps}:Props) {
                     <div>
                       <div>{option.label}</div>
                       {action !== option.value && (
-                        <div className="text-sm text-muted-foreground">{option.description}</div>
+                        <div className="text-sm text-muted-foreground">
+                          {option.description}
+                        </div>
                       )}
                     </div>
                   </SelectItem>
@@ -92,8 +125,13 @@ export default function GoogleDriveTrigger({steps}:Props) {
 
           {action === "new" && (
             <div className="space-y-4">
-              <Label htmlFor="filetype" className="text-lg font-semibold">File type:</Label>
-              <Select onValueChange={setSelectedFileType} value={selectedFileType}>
+              <Label htmlFor="filetype" className="text-lg font-semibold">
+                File type:
+              </Label>
+              <Select
+                onValueChange={setSelectedFileType}
+                value={selectedFileType}
+              >
                 <SelectTrigger id="filetype" className="w-full mt-2">
                   <SelectValue placeholder="Choose a file type" />
                 </SelectTrigger>
@@ -107,10 +145,15 @@ export default function GoogleDriveTrigger({steps}:Props) {
               </Select>
               {selectedFileType === "any" && (
                 <div>
-                  <Label htmlFor="custompattern" className="text-lg font-semibold">Custom file pattern (optional):</Label>
-                  <Input 
-                    id="custompattern" 
-                    placeholder="e.g., *.pdf, document*.docx" 
+                  <Label
+                    htmlFor="custompattern"
+                    className="text-lg font-semibold"
+                  >
+                    Custom file pattern (optional):
+                  </Label>
+                  <Input
+                    id="custompattern"
+                    placeholder="e.g., *.pdf, document*.docx"
                     className="w-full mt-2"
                     value={customPattern}
                     onChange={(e) => setCustomPattern(e.target.value)}
@@ -120,7 +163,9 @@ export default function GoogleDriveTrigger({steps}:Props) {
             </div>
           )}
 
-          {(action === "newInFolder" || action === "update" || action === "trash") && (
+          {(action === "newInFolder" ||
+            action === "update" ||
+            action === "trash") && (
             <div className="space-y-4">
               <Label className="text-lg font-semibold">Select a folder:</Label>
               <div className="flex items-center space-x-2 text-sm text-muted-foreground">
@@ -132,28 +177,43 @@ export default function GoogleDriveTrigger({steps}:Props) {
               </div>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                 {folderPath.length > 0 && (
-                  <Button variant="outline" onClick={handleBackFolder} className="w-full">
+                  <Button
+                    variant="outline"
+                    onClick={handleBackFolder}
+                    className="w-full"
+                  >
                     Back
                   </Button>
                 )}
                 {mockFolders.map((folder) => (
-                  <Button key={folder} variant="outline" onClick={() => handleFolderSelect(folder)} className="w-full">
+                  <Button
+                    key={folder}
+                    variant="outline"
+                    onClick={() => handleFolderSelect(folder)}
+                    className="w-full"
+                  >
                     <Folder className="mr-2 h-4 w-4" />
                     {folder}
                   </Button>
                 ))}
               </div>
               <div>
-                <Label htmlFor="filepattern" className="text-lg font-semibold">File name pattern (optional):</Label>
-                <Input id="filepattern" placeholder="e.g., *.pdf, document*.docx" className="w-full mt-2" />
+                <Label htmlFor="filepattern" className="text-lg font-semibold">
+                  File name pattern (optional):
+                </Label>
+                <Input
+                  id="filepattern"
+                  placeholder="e.g., *.pdf, document*.docx"
+                  className="w-full mt-2"
+                />
               </div>
             </div>
           )}
         </div>
 
         <div className="mt-4">
-          <Button 
-            variant="default" 
+          <Button
+            variant="default"
             className="w-full md:w-auto px-8 py-2 text-lg"
             onClick={handleClick}
           >
@@ -162,5 +222,5 @@ export default function GoogleDriveTrigger({steps}:Props) {
         </div>
       </div>
     </div>
-  )
+  );
 }
