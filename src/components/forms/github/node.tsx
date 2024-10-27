@@ -24,10 +24,14 @@ const actionOptions: ActionOption[] = [
   { value: "deleteBranch", label: "Delete Branch", description: "Deletes an unwanted branch." }
 ]
 
-export default function GitHubAction() {
+type Props = {
+  steps : number
+}
+
+export default function GitHubAction({steps}:Props) {
   const { workFlowSegment } = useParams<{ workFlowSegment: string }>()
   const router = useRouter()
-  const path = `/workflows/editor/${workFlowSegment}`
+  const path = `/workflows/${workFlowSegment}?step=${steps}`
 
   const [action, setAction] = useState<GitHubAction | "">("")
   const [repository, setRepository] = useState<string>("")

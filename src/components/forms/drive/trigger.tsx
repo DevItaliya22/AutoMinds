@@ -32,10 +32,14 @@ const mockFileTypes = [
   { value: "image", label: "Image (*.jpg, *.png, *.gif)" },
 ]
 
-export default function GoogleDriveTrigger() {
+type Props = {
+  steps : number
+}
+
+export default function GoogleDriveTrigger({steps}:Props) {
   const { workFlowSegment } = useParams<{ workFlowSegment: string }>()
   const router = useRouter()
-  const path = `/workflows/editor/${workFlowSegment}`
+  const path = `/workflows/${workFlowSegment}?step=${steps}`
 
   const [action, setAction] = useState<Action | "">("")
   const [selectedFolder, setSelectedFolder] = useState<string>("")
@@ -53,6 +57,10 @@ export default function GoogleDriveTrigger() {
   const handleBackFolder = () => {
     setFolderPath(folderPath.slice(0, -1))
     setSelectedFolder("")
+  }
+
+  const handleClick = () =>{
+    router.push(path)
   }
 
   return (
@@ -147,7 +155,7 @@ export default function GoogleDriveTrigger() {
           <Button 
             variant="default" 
             className="w-full md:w-auto px-8 py-2 text-lg"
-            onClick={() => router.push(path)}
+            onClick={handleClick}
           >
             Save and Continue
           </Button>

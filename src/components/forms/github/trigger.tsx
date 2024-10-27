@@ -29,10 +29,14 @@ const triggerOptions: TriggerOption[] = [
   { value: "newRepository", label: "New Repository", description: "Triggers when a new repository is created." },
 ]
 
-export default function GitHubTrigger() {
+type Props = {
+  steps : number
+}
+
+export default function GitHubTrigger({steps}:Props) {
   const { workFlowSegment } = useParams<{ workFlowSegment: string }>()
   const router = useRouter()
-  const path = `/workflows/editor/${workFlowSegment}`
+  const path = `/workflows/${workFlowSegment}?step=${steps}`
 
   const [trigger, setTrigger] = useState<GitHubTrigger | "">("")
   const [repository, setRepository] = useState<string>("")

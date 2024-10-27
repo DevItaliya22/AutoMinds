@@ -18,6 +18,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 import { motion } from "framer-motion"
+import GoogleDriveAction from '@/components/forms/drive/node'
 
 function WorkFlowSegment() {
   const { toast } = useToast()
@@ -56,9 +57,9 @@ function WorkFlowSegment() {
 
     switch (node.type) {
       case 'Google':
-        return node.workerType === 'Trigger' ? <GoogleDriveTrigger /> : <GoogleDriveTrigger />
+        return node.workerType === 'Trigger' ? <GoogleDriveTrigger steps={currentStep+1}/> : <GoogleDriveAction steps={currentStep+1}/>
       case 'Github':
-        return node.workerType === 'Trigger' ? <GitHubTrigger /> : <GitHubAction />
+        return node.workerType === 'Trigger' ? <GitHubTrigger steps={currentStep+1}/> : <GitHubAction steps={currentStep+1}/>
       default:
         return null
     }
