@@ -51,20 +51,6 @@ model Workflow {
   @@unique([name, userId])
 }
 
-// Tree data structure for the workflow
-model Node {
-  id            String   @id @default(uuid())
-  name          String
-  description   String
-  type          NodeType
-  workflowId    String
-  workflow      Workflow @relation("WorkflowNodes", fields: [workflowId], references: [id]) // Many-to-one relationship with Workflow
-  workerType    WorkerType
-  // this will store position for react flow
-  positionX     Float
-  positionY     Float
-}
-
 model Edge  {
   id         String @id @default(uuid())
   sourceId   String // this will be the id of the source node
@@ -74,9 +60,84 @@ model Edge  {
   workflow   Workflow @relation("WorkflowEdges", fields: [workflowId], references: [id]) // Many-to-one relationship with Workflow
 }
 
+// Tree data structure for the workflow
+model Node {
+  id            String   @id @default(uuid())
+  name          String
+  description   String
+  type          NodeType //Google or Github
+  workflowId    String
+  workflow      Workflow @relation("WorkflowNodes", fields: [workflowId], references: [id]) // Many-to-one relationship with Workflow
+  workerType    WorkerType //Trigger or Action
+  positionX     Float
+  positionY     Float
+}
+
+model GoogleNode {
+  id            String   @id @default(uuid())
+  NodeId        String
+
+  isTrigger     Boolean
+  ServiceName   ServiceName
+
+  // Google Drive Trigger Info
+  GoogleDriveTriggersWhen  String? // newFile, newFileinFolder, deletedFileInFolder, updatedFileInFolder (use the value field in trigger.tsx in /forms/drive)
+  GoogleDriveTriggersMimeType    String?  //this is the type of uploaded or updated or deleted to start the workflow
+  GoogleDriveTriggerFolderPath        String?  
+  GoogleDriveTriggerFolderId          String?  
+
+  // Google Drive Action Info
+  GoogleDriveActionType        String? // copyFile , createFile , createFolder , deleteFile , moveFile , updateName
+  GoogleDriveActionFileId      String? // this is the file id on which action will be performed
+  GoogleDriveActionFileName    String? // this is the file name on which action will be performed
+  GoogleDriveActionFolderId    String? // this is the folder id on which action will be performed
+  GoogleDriveActionFolderName  String? // this is the folder name on which action will be performed
+  GoogleDriveActionNewName     String? // this is the new name of the file or folder
+  GoogleDriveActionContent     String? // this is the content of the file
+  GoogleDriveActionIsPublic    Boolean? // this is the public or private file
+  GoogleDriveActionSourceFolderId String? // this is the source folder id for moveFile action
+  GoogleDriveActionDestinationFolderId String? // this is the destination folder id for moveFile action
+
+  // Google Mail Trigger Info
+  // Google Mail Action Inf
+
+}
+
+model GithubNode { 
+  id            String   @id @default(uuid())
+  NodeId        String
+
+  // Github Trigger Info
+  GithubTriggersWhen        String? // newIssue , newPR , newPush , newGist etc 
+  GithubTriggerRepoName     String? // this is the repo name on which trigger will be performed
+  GithubTriggerRepoOwner    String? // this is the repo owner on which trigger will be performed
+  
+  // Github Action Info
+  GithubActionType        String? // createGist  , createIssue , deleteBranch , createbranch , createPR
+  GithubActionRepoName    String? // this is the repo name on which action will be performed
+  GithubActionRepoOwner   String? // this is the repo owner on which action will be performed
+  GithubActionBranchName  String? // this is the branch name on which action will be performed
+  GithubActionGistDescription String? // this is the content of the gist
+  GithubActionGistName    String? // this is the name of the gist
+  GithubActionGistBody    String? // this is the body of the gist
+  GitHubActionisPublic    String? // this is the title of the issue
+  GithubActionIssueTitle  String? // this is the title of the issue
+  GithubActionIssueBody   String? // this is the body of the issue
+  GithubActionPRTitle     String? // this is the title of the PR
+  GithubActionPRBody      String? // this is the body of the PR
+}
+
+
 enum WorkerType {
   Trigger
   Action
+}
+
+enum ServiceName {
+  GoogleMail 
+  GoogleDrive 
+  GoogleClassroom
+  GoogleForms
 }
 enum NodeType {
   Google

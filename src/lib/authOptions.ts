@@ -129,7 +129,7 @@ export const authOptions: AuthOptions = {
         });
       }
       if (isAccessTokenExpired(new Date(token.accessTokenExpires))) {
-        console.log('Going to find new accesstoken using refresh token');
+        console.log('\n\n\nGoing to find new accesstoken using refresh token\n\n\n');
         return refreshAccessToken(token);
       }
       return token;

@@ -87,7 +87,16 @@ function WorkFlowSegment() {
 
   return (
     <div className="flex flex-col min-h-screen p-6">
-      <div className="flex justify-end mb-6">
+      <div className="flex justify-between mb-6">
+        <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+          <Button
+            variant="outline"
+            onClick={() => router.push("/workflows")}
+            className="px-6 py-3 text-lg font-semibold"
+          >
+            Workflow page 
+          </Button>
+        </motion.div>
         <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
           <Button
             variant="outline"

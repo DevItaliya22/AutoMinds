@@ -3,8 +3,17 @@
 import { Button } from '@/components/ui/button';
 import { ChromeIcon } from 'lucide-react';
 import { signIn } from 'next-auth/react';
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 
 export default function Signin() {
+  const {status}  = useSession();
+  const router = useRouter();
+  
+  if(status === 'authenticated') {
+    router.push('/dashboard');
+  }
+
   return (
     <div className="flex min-h-[100dvh] bg-gradient-to-b from-black from-12% via-purple-950 via-70% to-purple-800 to-90%">
       <div className="flex-1 flex flex-col items-center justify-center px-4 py-12 sm:px-6 lg:px-8">

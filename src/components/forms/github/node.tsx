@@ -43,6 +43,11 @@ const actionOptions: ActionOption[] = [
     label: 'Delete Branch',
     description: 'Deletes an unwanted branch.',
   },
+  {
+    value: 'createBranch',
+    label: 'Create Branch',
+    description: 'Create a branch.',
+  },
 ];
 
 type Props = {
@@ -85,21 +90,14 @@ export default function GitHubAction({ steps }: Props) {
               <SelectContent>
                 {actionOptions.map((option) => (
                   <SelectItem key={option.value} value={option.value}>
-                    <div>
-                      <div>{option.label}</div>
-                      {action !== option.value && (
-                        <div className="text-sm text-muted-foreground">
-                          {option.description}
-                        </div>
-                      )}
-                    </div>
+                      <div>{option.label} ( {option.description} )</div>
                   </SelectItem>
                 ))}
               </SelectContent>
             </Select>
           </div>
 
-          {(action === 'createIssue' || action === 'createPullRequest') && (
+          {(action === 'createIssue' || action === 'createPullRequest' || action === "createBranch") && (
             <div>
               <Label htmlFor="repository" className="text-lg font-semibold">
                 Select a repository:
@@ -151,7 +149,7 @@ export default function GitHubAction({ steps }: Props) {
             </div>
           )}
 
-          {(action === 'createPullRequest' || action === 'deleteBranch') && (
+          {(action === 'createPullRequest' || action === 'deleteBranch' || action === "createBranch") && (
             <div>
               <Label htmlFor="branch" className="text-lg font-semibold">
                 Branch name:

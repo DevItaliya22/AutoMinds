@@ -96,14 +96,7 @@ export default function GitHubTrigger({ steps }: Props) {
               <SelectContent>
                 {triggerOptions.map((option) => (
                   <SelectItem key={option.value} value={option.value}>
-                    <div>
-                      <div>{option.label}</div>
-                      {trigger !== option.value && (
-                        <div className="text-sm text-muted-foreground">
-                          {option.description}
-                        </div>
-                      )}
-                    </div>
+                     <div>{option.label} ( {option.description} )</div>
                   </SelectItem>
                 ))}
               </SelectContent>

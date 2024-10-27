@@ -48,24 +48,9 @@ const actionOptions: ActionOption[] = [
     description: 'Move a file from one folder to another.',
   },
   {
-    value: 'replaceFile',
-    label: 'Replace File',
-    description: 'Upload a file to Drive, replacing an existing file.',
-  },
-  {
-    value: 'retrieveFiles',
-    label: 'Retrieve Files',
-    description: 'Retrieve a list of files based on specific query parameters.',
-  },
-  {
     value: 'updateName',
     label: 'Update File/Folder Name',
     description: 'Update the name of a file or folder.',
-  },
-  {
-    value: 'uploadFile',
-    label: 'Upload File',
-    description: 'Upload a new file to Google Drive.',
   },
 ];
 
@@ -108,14 +93,7 @@ export default function GoogleDriveAction({ steps }: Props) {
               <SelectContent>
                 {actionOptions.map((option) => (
                   <SelectItem key={option.value} value={option.value}>
-                    <div>
-                      <div>{option.label}</div>
-                      {action !== option.value && (
-                        <div className="text-sm text-muted-foreground">
-                          {option.description}
-                        </div>
-                      )}
-                    </div>
+                      <div>{option.label} ( {option.description} )</div>
                   </SelectItem>
                 ))}
               </SelectContent>

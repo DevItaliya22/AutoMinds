@@ -109,14 +109,7 @@ export default function GoogleDriveTrigger({ steps }: Props) {
               <SelectContent>
                 {actionOptions.map((option) => (
                   <SelectItem key={option.value} value={option.value}>
-                    <div>
-                      <div>{option.label}</div>
-                      {action !== option.value && (
-                        <div className="text-sm text-muted-foreground">
-                          {option.description}
-                        </div>
-                      )}
-                    </div>
+                    <div>{option.label} ( {option.description} )</div>
                   </SelectItem>
                 ))}
               </SelectContent>

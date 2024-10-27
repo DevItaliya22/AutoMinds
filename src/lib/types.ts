@@ -32,7 +32,8 @@ export type GitHubAction =
   | 'createGist'
   | 'createIssue'
   | 'createPullRequest'
-  | 'deleteBranch';
+  | 'deleteBranch'
+  | 'createBranch';
 
 export type GitHubTrigger =
   | 'newBranch'
@@ -43,3 +44,12 @@ export type GitHubTrigger =
   | 'newPullRequest'
   | 'newRepoEvent'
   | 'newRepository';
+
+  export type GmailTriggerActions =
+  | 'newAttachment'
+  | 'newEmail'
+  | 'newEmailMatchingSearch'
+  | 'newLabel'
+  | 'newLabeledEmail'
+  | 'newStarredEmail'
+  | 'newThread';
