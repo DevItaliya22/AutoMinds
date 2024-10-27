@@ -1,39 +1,50 @@
-import React, { DragEvent } from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { ScrollArea } from "@/components/ui/scroll-area"
-import { Input } from "@/components/ui/input"
-import { Database, Github, Mailbox, Search, Loader2 } from 'lucide-react'
-import { TriggerNodes , ActionNodes } from '@/lib/constants'
-import { useRouter } from 'next/navigation'
+import React, { DragEvent } from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { Input } from '@/components/ui/input';
+import { Database, Github, Mailbox, Search, Loader2 } from 'lucide-react';
+import { TriggerNodes, ActionNodes } from '@/lib/constants';
+import { useRouter } from 'next/navigation';
 
 type SidebarProps = {
-  handleSave: () => void
-  hasTrigger: boolean
-  searchTerm: string
-  setSearchTerm: (term: string) => void
-  isSaving: boolean
-  isFetching: boolean
-  workFlowPath : string
-}
+  handleSave: () => void;
+  hasTrigger: boolean;
+  searchTerm: string;
+  setSearchTerm: (term: string) => void;
+  isSaving: boolean;
+  isFetching: boolean;
+  workFlowPath: string;
+};
 
-export default function Sidebar({ handleSave, hasTrigger, searchTerm, setSearchTerm, isSaving, isFetching ,workFlowPath }: SidebarProps) {
-  const onDragStart = (event: DragEvent<HTMLButtonElement>, nodeType: string) => {
-    event.dataTransfer.setData('application/reactflow', nodeType)
-    event.dataTransfer.effectAllowed = 'move'
-  }
+export default function Sidebar({
+  handleSave,
+  hasTrigger,
+  searchTerm,
+  setSearchTerm,
+  isSaving,
+  isFetching,
+  workFlowPath,
+}: SidebarProps) {
+  const onDragStart = (
+    event: DragEvent<HTMLButtonElement>,
+    nodeType: string,
+  ) => {
+    event.dataTransfer.setData('application/reactflow', nodeType);
+    event.dataTransfer.effectAllowed = 'move';
+  };
 
   const router = useRouter();
-  const triggerNodes = TriggerNodes
-  const actionNodes = ActionNodes
-  const nodesToShow = hasTrigger ? actionNodes : triggerNodes
-  const filteredNodes = nodesToShow.filter(node => 
-    node.label.toLowerCase().includes(searchTerm.toLowerCase())
-  )
+  const triggerNodes = TriggerNodes;
+  const actionNodes = ActionNodes;
+  const nodesToShow = hasTrigger ? actionNodes : triggerNodes;
+  const filteredNodes = nodesToShow.filter((node) =>
+    node.label.toLowerCase().includes(searchTerm.toLowerCase()),
+  );
 
   const handleExitEditor = () => {
-    router.push(workFlowPath)
-  }
+    router.push(workFlowPath);
+  };
 
   return (
     <Card className="w-64 h-auto border-l">
@@ -50,10 +61,11 @@ export default function Sidebar({ handleSave, hasTrigger, searchTerm, setSearchT
                 'Save Workflow'
               )}
             </Button>
-            <Button onClick={handleExitEditor} disabled={isSaving || isFetching} >
-                <>
-                  Exit Editor
-                </>
+            <Button
+              onClick={handleExitEditor}
+              disabled={isSaving || isFetching}
+            >
+              <>Exit Editor</>
             </Button>
           </div>
         </CardTitle>
@@ -90,5 +102,5 @@ export default function Sidebar({ handleSave, hasTrigger, searchTerm, setSearchT
         </ScrollArea>
       </CardContent>
     </Card>
-  )
+  );
 }

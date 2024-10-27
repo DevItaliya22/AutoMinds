@@ -1,22 +1,22 @@
-"use server"
+'use server';
 // const { PrismaClient } = require("@prisma/client");
 
 // // @ts-expect-error
 // const prisma = new PrismaClient();
 
-import prisma from "../src/lib/db"
+import prisma from '../src/lib/db';
 
 async function main() {
   const user = await prisma.user.create({
     data: {
-      name: "John Doe2",
-      email: "jo2hn.doe@example.com",
-      imageUrl: "https://example.com/johndoe.jpg",
+      name: 'John Doe2',
+      email: 'jo2hn.doe@example.com',
+      imageUrl: 'https://example.com/johndoe.jpg',
       AccessToken: {
         create: {
-          GoogleAccessToken: "google-token-123",
+          GoogleAccessToken: 'google-token-123',
           GoogleAccessTokenExpireAt: new Date(),
-          GithubAccessToken: "github-token-123",
+          GithubAccessToken: 'github-token-123',
         },
       },
     },
@@ -24,33 +24,33 @@ async function main() {
 
   const workflow = await prisma.workflow.create({
     data: {
-      name: "Sample Workflow 2",
-      description: "This is a sample workflow",
+      name: 'Sample Workflow 2',
+      description: 'This is a sample workflow',
       userId: user.id,
     },
   });
 
   const node1 = await prisma.node.create({
     data: {
-      name: "Google Node",
-      description: "This node is for Google",
-      type: "Google",
+      name: 'Google Node',
+      description: 'This node is for Google',
+      type: 'Google',
       workflowId: workflow.id,
       positionX: 10,
       positionY: 20,
-      workerType: "Trigger",
+      workerType: 'Trigger',
     },
   });
 
   const node2 = await prisma.node.create({
     data: {
-      name: "Github Node",
-      description: "This node is for Github",
-      type: "Github",
+      name: 'Github Node',
+      description: 'This node is for Github',
+      type: 'Github',
       workflowId: workflow.id,
       positionX: 30,
       positionY: 40,
-      workerType: "Action",
+      workerType: 'Action',
     },
   });
 
@@ -62,7 +62,7 @@ async function main() {
     },
   });
 
-  console.log("Seeding completed");
+  console.log('Seeding completed');
 }
 
 main()

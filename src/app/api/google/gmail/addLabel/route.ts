@@ -1,16 +1,16 @@
 import { NextResponse } from 'next/server';
-import { addLabel } from '@/app/api/google'; 
+import { addLabel } from '@/app/api/google';
 
 export async function POST(request: Request) {
   const data = await request.json();
-  
+
   const result = await addLabel(data);
 
   return NextResponse.json(result);
 }
 
 // when u want to add label , then we have to ask user that on which mail they want to do this operation , and which lbel they want to add
-// now they have already labels , and we can get them , show there name to user and we will hve there id , send that id to this api , and 
+// now they have already labels , and we can get them , show there name to user and we will hve there id , send that id to this api , and
 // the label will be added to that mail => now on which mail ? so either we can ask user to provide mail , by showing them many mail or we can create a mail and put that label on that mail
 // const handleAddLabelClick = async () => {
 //     const res1 = await fetch("/api/google/gmail/listLabels", {

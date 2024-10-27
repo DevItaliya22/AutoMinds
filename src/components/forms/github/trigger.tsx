@@ -1,17 +1,17 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { useParams, useRouter } from "next/navigation";
-import { Button } from "@/components/ui/button";
+import { useState } from 'react';
+import { useParams, useRouter } from 'next/navigation';
+import { Button } from '@/components/ui/button';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Label } from "@/components/ui/label";
-import type { GitHubTrigger } from "@/lib/types";
+} from '@/components/ui/select';
+import { Label } from '@/components/ui/label';
+import type { GitHubTrigger } from '@/lib/types';
 
 interface TriggerOption {
   value: GitHubTrigger;
@@ -21,44 +21,44 @@ interface TriggerOption {
 
 const triggerOptions: TriggerOption[] = [
   {
-    value: "newBranch",
-    label: "New Branch",
-    description: "Triggers when a new branch is created.",
+    value: 'newBranch',
+    label: 'New Branch',
+    description: 'Triggers when a new branch is created.',
   },
   {
-    value: "newCollaborator",
-    label: "New Collaborator",
-    description: "Triggers when you add a new collaborator.",
+    value: 'newCollaborator',
+    label: 'New Collaborator',
+    description: 'Triggers when you add a new collaborator.',
   },
   {
-    value: "newCommit",
-    label: "New Commit",
-    description: "Triggers when a new commit is created.",
+    value: 'newCommit',
+    label: 'New Commit',
+    description: 'Triggers when a new commit is created.',
   },
   {
-    value: "newCommitComment",
-    label: "New Commit Comment",
-    description: "Triggers when a new comment on a commit is created.",
+    value: 'newCommitComment',
+    label: 'New Commit Comment',
+    description: 'Triggers when a new comment on a commit is created.',
   },
   {
-    value: "newIssue",
-    label: "New Issue",
-    description: "Triggers when a new issue is created.",
+    value: 'newIssue',
+    label: 'New Issue',
+    description: 'Triggers when a new issue is created.',
   },
   {
-    value: "newPullRequest",
-    label: "New Pull Request",
-    description: "Triggers when a new pull request is created.",
+    value: 'newPullRequest',
+    label: 'New Pull Request',
+    description: 'Triggers when a new pull request is created.',
   },
   {
-    value: "newRepoEvent",
-    label: "New Repo Event",
-    description: "Triggers when anything happens on a repo.",
+    value: 'newRepoEvent',
+    label: 'New Repo Event',
+    description: 'Triggers when anything happens on a repo.',
   },
   {
-    value: "newRepository",
-    label: "New Repository",
-    description: "Triggers when a new repository is created.",
+    value: 'newRepository',
+    label: 'New Repository',
+    description: 'Triggers when a new repository is created.',
   },
 ];
 
@@ -71,10 +71,10 @@ export default function GitHubTrigger({ steps }: Props) {
   const router = useRouter();
   const path = `/workflows/${workFlowSegment}?step=${steps}`;
 
-  const [trigger, setTrigger] = useState<GitHubTrigger | "">("");
-  const [repository, setRepository] = useState<string>("");
+  const [trigger, setTrigger] = useState<GitHubTrigger | ''>('');
+  const [repository, setRepository] = useState<string>('');
 
-  const mockRepositories = ["user/repo1", "user/repo2", "organization/repo3"];
+  const mockRepositories = ['user/repo1', 'user/repo2', 'organization/repo3'];
 
   return (
     <div className="bg-background p-6 md:p-12">
@@ -110,12 +110,12 @@ export default function GitHubTrigger({ steps }: Props) {
             </Select>
           </div>
 
-          {(trigger === "newBranch" ||
-            trigger === "newCommit" ||
-            trigger === "newCommitComment" ||
-            trigger === "newIssue" ||
-            trigger === "newPullRequest" ||
-            trigger === "newRepoEvent" ) && (
+          {(trigger === 'newBranch' ||
+            trigger === 'newCommit' ||
+            trigger === 'newCommitComment' ||
+            trigger === 'newIssue' ||
+            trigger === 'newPullRequest' ||
+            trigger === 'newRepoEvent') && (
             <div>
               <Label htmlFor="repository" className="text-lg font-semibold">
                 Select a repository:

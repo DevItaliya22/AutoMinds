@@ -1,9 +1,9 @@
 import { NextResponse } from 'next/server';
-import { getAllfiles } from '@/app/api/google'; 
+import { getAllfiles } from '@/app/api/google';
 
 export async function POST(request: Request) {
   const data = await request.json();
-  
+
   const result = await getAllfiles(data);
 
   return NextResponse.json(result);

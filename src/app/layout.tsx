@@ -1,8 +1,8 @@
-"use client";
-import "./globals.css";
-import { ThemeProvider } from "@/components/providers/theme-providers";
-import { Toaster } from "@/components/ui/toaster";
-import { SessionProvider } from "next-auth/react";
+'use client';
+import './globals.css';
+import { ThemeProvider } from '@/components/providers/theme-providers';
+import { Toaster } from '@/components/ui/toaster';
+import { SessionProvider } from 'next-auth/react';
 
 export default function RootLayout({
   children,
@@ -19,8 +19,8 @@ export default function RootLayout({
             // enableSystem
             disableTransitionOnChange
           >
-            <Toaster/>
-              {children}
+            <Toaster />
+            {children}
           </ThemeProvider>
         </SessionProvider>
       </body>

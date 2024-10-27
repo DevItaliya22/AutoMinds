@@ -1,20 +1,20 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { useParams, useRouter } from "next/navigation";
-import { Button } from "@/components/ui/button";
+import { useState } from 'react';
+import { useParams, useRouter } from 'next/navigation';
+import { Button } from '@/components/ui/button';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { Switch } from "@/components/ui/switch";
-import type { GitHubAction } from "@/lib/types";
+} from '@/components/ui/select';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { Switch } from '@/components/ui/switch';
+import type { GitHubAction } from '@/lib/types';
 
 interface ActionOption {
   value: GitHubAction;
@@ -24,24 +24,24 @@ interface ActionOption {
 
 const actionOptions: ActionOption[] = [
   {
-    value: "createGist",
-    label: "Create Gist",
-    description: "Creates a new gist.",
+    value: 'createGist',
+    label: 'Create Gist',
+    description: 'Creates a new gist.',
   },
   {
-    value: "createIssue",
-    label: "Create Issue",
-    description: "Create a new issue.",
+    value: 'createIssue',
+    label: 'Create Issue',
+    description: 'Create a new issue.',
   },
   {
-    value: "createPullRequest",
-    label: "Create Pull Request",
-    description: "Create a new pull request and merge it (optional).",
+    value: 'createPullRequest',
+    label: 'Create Pull Request',
+    description: 'Create a new pull request and merge it (optional).',
   },
   {
-    value: "deleteBranch",
-    label: "Delete Branch",
-    description: "Deletes an unwanted branch.",
+    value: 'deleteBranch',
+    label: 'Delete Branch',
+    description: 'Deletes an unwanted branch.',
   },
 ];
 
@@ -54,16 +54,16 @@ export default function GitHubAction({ steps }: Props) {
   const router = useRouter();
   const path = `/workflows/${workFlowSegment}?step=${steps}`;
 
-  const [action, setAction] = useState<GitHubAction | "">("");
-  const [repository, setRepository] = useState<string>("");
-  const [title, setTitle] = useState<string>("");
-  const [body, setBody] = useState<string>("");
-  const [branch, setBranch] = useState<string>("");
-  const [fileName, setFileName] = useState<string>("");
-  const [description, setDescription] = useState<string>("");
+  const [action, setAction] = useState<GitHubAction | ''>('');
+  const [repository, setRepository] = useState<string>('');
+  const [title, setTitle] = useState<string>('');
+  const [body, setBody] = useState<string>('');
+  const [branch, setBranch] = useState<string>('');
+  const [fileName, setFileName] = useState<string>('');
+  const [description, setDescription] = useState<string>('');
   const [isPublic, setIsPublic] = useState<boolean>(false);
 
-  const mockRepositories = ["user/repo1", "user/repo2", "organization/repo3"];
+  const mockRepositories = ['user/repo1', 'user/repo2', 'organization/repo3'];
 
   return (
     <div className="bg-background p-6 md:p-12">
@@ -99,7 +99,7 @@ export default function GitHubAction({ steps }: Props) {
             </Select>
           </div>
 
-          {(action === "createIssue" || action === "createPullRequest") && (
+          {(action === 'createIssue' || action === 'createPullRequest') && (
             <div>
               <Label htmlFor="repository" className="text-lg font-semibold">
                 Select a repository:
@@ -119,7 +119,7 @@ export default function GitHubAction({ steps }: Props) {
             </div>
           )}
 
-          {(action === "createIssue" || action === "createPullRequest") && (
+          {(action === 'createIssue' || action === 'createPullRequest') && (
             <div>
               <Label htmlFor="title" className="text-lg font-semibold">
                 Title:
@@ -134,9 +134,9 @@ export default function GitHubAction({ steps }: Props) {
             </div>
           )}
 
-          {(action === "createIssue" ||
-            action === "createPullRequest" ||
-            action === "createGist") && (
+          {(action === 'createIssue' ||
+            action === 'createPullRequest' ||
+            action === 'createGist') && (
             <div>
               <Label htmlFor="body" className="text-lg font-semibold">
                 Body:
@@ -151,7 +151,7 @@ export default function GitHubAction({ steps }: Props) {
             </div>
           )}
 
-          {(action === "createPullRequest" || action === "deleteBranch") && (
+          {(action === 'createPullRequest' || action === 'deleteBranch') && (
             <div>
               <Label htmlFor="branch" className="text-lg font-semibold">
                 Branch name:
@@ -166,7 +166,7 @@ export default function GitHubAction({ steps }: Props) {
             </div>
           )}
 
-          {action === "createGist" && (
+          {action === 'createGist' && (
             <>
               <div>
                 <Label htmlFor="fileName" className="text-lg font-semibold">

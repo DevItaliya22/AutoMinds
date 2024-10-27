@@ -1,7 +1,7 @@
-"use server"
-import { google } from "googleapis";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/authOptions";
+'use server';
+import { google } from 'googleapis';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/authOptions';
 
 async function getGoogleInstance() {
   const session = await getServerSession(authOptions);
@@ -12,13 +12,13 @@ async function getGoogleInstance() {
   // // console.log('Session : ', session);
   // const access_token = session.accessToken;
 
-  const access_token = "";
+  const access_token = '';
 
   const auth = new google.auth.OAuth2();
   auth.setCredentials({ access_token });
 
-  const drive = google.drive({ version: "v3", auth });
-  const gmail = google.gmail({ version: "v1", auth });
+  const drive = google.drive({ version: 'v3', auth });
+  const gmail = google.gmail({ version: 'v1', auth });
 
   return { drive, gmail };
 }
@@ -29,7 +29,7 @@ async function watchUser() {
   if (!googleInstance) {
     return { error: 'Unauthorized' };
   }
-  
+
   const { gmail } = googleInstance;
   try {
     const res = await gmail.users.watch({
@@ -39,7 +39,7 @@ async function watchUser() {
         labelIds: ['INBOX'],
       },
     });
-    
+
     console.log('Response:', res);
     console.log('Watcher created');
     return { res };
@@ -50,7 +50,7 @@ async function watchUser() {
 }
 
 // Google mail functions
-async function addLabel(data: { messageId: string, labelId: string }) {
+async function addLabel(data: { messageId: string; labelId: string }) {
   const googleInstance = await getGoogleInstance();
   if (!googleInstance) {
     return { error: 'Unauthorized' };
@@ -64,7 +64,7 @@ async function addLabel(data: { messageId: string, labelId: string }) {
       requestBody: {
         addLabelIds: [data.labelId],
       },
-    })
+    });
     console.log(res);
     console.log('Label added to email');
     return { res };
@@ -106,16 +106,13 @@ async function ListEmails(data: { maxResults: number }) {
       maxResults: data.maxResults, // Adjust the number of results as needed
     });
 
-    return { messages: response.data }
+    return { messages: response.data };
   } catch (error) {
     return { error: 'Failed to list emails' };
   }
 }
 
-async function removeLabel(data: {
-  messageId
-  : string, labelId: string
-}) {
+async function removeLabel(data: { messageId: string; labelId: string }) {
   const googleInstance = await getGoogleInstance();
   if (!googleInstance) {
     return { error: 'Unauthorized' };
@@ -129,7 +126,7 @@ async function removeLabel(data: {
       requestBody: {
         removeLabelIds: [data.labelId],
       },
-    })
+    });
     console.log('Label removed from email');
     return { res };
   } catch (error) {
@@ -173,7 +170,7 @@ async function deleteEmail(data: { id: string }) {
     const res = await gmail.users.messages.delete({
       userId: 'me',
       id: data.id,
-    })
+    });
     console.log('Email deleted');
     return { res };
   } catch (error) {
@@ -182,7 +179,7 @@ async function deleteEmail(data: { id: string }) {
   }
 }
 
-async function sendEmail(data: { to: string, subject: string, body: string }) {
+async function sendEmail(data: { to: string; subject: string; body: string }) {
   const googleInstance = await getGoogleInstance();
   if (!googleInstance) {
     return { error: 'Unauthorized' };
@@ -190,7 +187,10 @@ async function sendEmail(data: { to: string, subject: string, body: string }) {
   const { gmail } = googleInstance;
 
   const email = `To: ${data.to}\r\nSubject: ${data.subject}\r\n\r\n${data.body}`;
-  const base64EncodedEmail = Buffer.from(email).toString('base64').replace(/\+/g, '-').replace(/\//g, '_');
+  const base64EncodedEmail = Buffer.from(email)
+    .toString('base64')
+    .replace(/\+/g, '-')
+    .replace(/\//g, '_');
 
   try {
     const response = await gmail.users.messages.send({
@@ -206,7 +206,7 @@ async function sendEmail(data: { to: string, subject: string, body: string }) {
   }
 }
 
-async function searchEmails(data: { query: string, maxResults: number }) {
+async function searchEmails(data: { query: string; maxResults: number }) {
   const googleInstance = await getGoogleInstance();
   if (!googleInstance) {
     return { error: 'Unauthorized' };
@@ -233,7 +233,7 @@ async function searchEmails(data: { query: string, maxResults: number }) {
         });
 
         return messageDetails.data;
-      })
+      }),
     );
 
     return { emails: emailDetails };
@@ -242,7 +242,11 @@ async function searchEmails(data: { query: string, maxResults: number }) {
   }
 }
 
-async function createAndSendDraftEmail(data: { to: string, subject: string, body: string }) {
+async function createAndSendDraftEmail(data: {
+  to: string;
+  subject: string;
+  body: string;
+}) {
   const googleInstance = await getGoogleInstance();
   if (!googleInstance) {
     return { error: 'Unauthorized' };
@@ -283,7 +287,6 @@ async function createAndSendDraftEmail(data: { to: string, subject: string, body
   }
 }
 
-
 // Google drive functions
 
 async function listFolders(data: { pageSize: number }) {
@@ -310,7 +313,11 @@ async function listFolders(data: { pageSize: number }) {
   }
 }
 
-async function createFile(data: { name: string, mimeType: string, body: string }) {
+async function createFile(data: {
+  name: string;
+  mimeType: string;
+  body: string;
+}) {
   const googleInstance = await getGoogleInstance();
 
   if (!googleInstance) {
@@ -321,7 +328,7 @@ async function createFile(data: { name: string, mimeType: string, body: string }
 
   const fileMetadata = {
     name: data.name,
-    fields: "id"
+    fields: 'id',
   };
 
   const media = {
@@ -345,7 +352,6 @@ async function createFile(data: { name: string, mimeType: string, body: string }
 }
 
 async function deleteFile(data: { fileId: string }) {
-
   const googleInstance = await getGoogleInstance();
 
   if (!googleInstance) {
@@ -419,7 +425,7 @@ async function readFile(data: { fileId: string }) {
   }
 }
 
-async function updateFile(data: { fileId: string, body: string }) {
+async function updateFile(data: { fileId: string; body: string }) {
   const googleInstance = await getGoogleInstance();
 
   if (!googleInstance) {
@@ -433,7 +439,6 @@ async function updateFile(data: { fileId: string, body: string }) {
   if (!fileId || !newContent) {
     return { error: 'File ID and new content are required' };
   }
-
 
   try {
     const existingFile = await drive.files.get({
@@ -463,4 +468,22 @@ async function updateFile(data: { fileId: string, body: string }) {
   }
 }
 
-export { createFile, deleteFile, getAllfiles, readFile, updateFile, addLabel, removeLabel, createLabel, deleteEmail, searchEmails, sendEmail, createAndSendDraftEmail, getGoogleInstance, ListLabels, ListEmails ,listFolders,watchUser};
+export {
+  createFile,
+  deleteFile,
+  getAllfiles,
+  readFile,
+  updateFile,
+  addLabel,
+  removeLabel,
+  createLabel,
+  deleteEmail,
+  searchEmails,
+  sendEmail,
+  createAndSendDraftEmail,
+  getGoogleInstance,
+  ListLabels,
+  ListEmails,
+  listFolders,
+  watchUser,
+};

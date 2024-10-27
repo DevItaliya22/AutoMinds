@@ -1,9 +1,9 @@
-"use client";
-import React, { useEffect, useState, useCallback, useMemo } from "react";
-import { CONNECTIONS } from "@/lib/constants";
-import ConnectionCard from "./_components/Card";
-import { Connection } from "@/lib/types";
-import getConnections from "@/app/actions/getConnections";
+'use client';
+import React, { useEffect, useState, useCallback, useMemo } from 'react';
+import { CONNECTIONS } from '@/lib/constants';
+import ConnectionCard from './_components/Card';
+import { Connection } from '@/lib/types';
+import getConnections from '@/app/actions/getConnections';
 
 function Connections() {
   const [connections, setConnections] = useState<string[]>([]);

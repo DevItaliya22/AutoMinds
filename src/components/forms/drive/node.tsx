@@ -1,19 +1,19 @@
-"use client";
-import { useState } from "react";
-import { useParams, useRouter } from "next/navigation";
-import { Button } from "@/components/ui/button";
+'use client';
+import { useState } from 'react';
+import { useParams, useRouter } from 'next/navigation';
+import { Button } from '@/components/ui/button';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { Switch } from "@/components/ui/switch";
-import type { GoogleDriveAction } from "@/lib/types";
+} from '@/components/ui/select';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { Switch } from '@/components/ui/switch';
+import type { GoogleDriveAction } from '@/lib/types';
 
 interface ActionOption {
   value: GoogleDriveAction;
@@ -23,49 +23,49 @@ interface ActionOption {
 
 const actionOptions: ActionOption[] = [
   {
-    value: "copyFile",
-    label: "Copy File",
-    description: "Create a copy of the specified file.",
+    value: 'copyFile',
+    label: 'Copy File',
+    description: 'Create a copy of the specified file.',
   },
   {
-    value: "createFile",
-    label: "Create File From Text",
-    description: "Create a new file from plain text.",
+    value: 'createFile',
+    label: 'Create File From Text',
+    description: 'Create a new file from plain text.',
   },
   {
-    value: "createFolder",
-    label: "Create Folder",
-    description: "Create a new, empty folder.",
+    value: 'createFolder',
+    label: 'Create Folder',
+    description: 'Create a new, empty folder.',
   },
   {
-    value: "deleteFile",
-    label: "Delete File",
-    description: "Delete a file in Google Drive.",
+    value: 'deleteFile',
+    label: 'Delete File',
+    description: 'Delete a file in Google Drive.',
   },
   {
-    value: "moveFile",
-    label: "Move File",
-    description: "Move a file from one folder to another.",
+    value: 'moveFile',
+    label: 'Move File',
+    description: 'Move a file from one folder to another.',
   },
   {
-    value: "replaceFile",
-    label: "Replace File",
-    description: "Upload a file to Drive, replacing an existing file.",
+    value: 'replaceFile',
+    label: 'Replace File',
+    description: 'Upload a file to Drive, replacing an existing file.',
   },
   {
-    value: "retrieveFiles",
-    label: "Retrieve Files",
-    description: "Retrieve a list of files based on specific query parameters.",
+    value: 'retrieveFiles',
+    label: 'Retrieve Files',
+    description: 'Retrieve a list of files based on specific query parameters.',
   },
   {
-    value: "updateName",
-    label: "Update File/Folder Name",
-    description: "Update the name of a file or folder.",
+    value: 'updateName',
+    label: 'Update File/Folder Name',
+    description: 'Update the name of a file or folder.',
   },
   {
-    value: "uploadFile",
-    label: "Upload File",
-    description: "Upload a new file to Google Drive.",
+    value: 'uploadFile',
+    label: 'Upload File',
+    description: 'Upload a new file to Google Drive.',
   },
 ];
 
@@ -78,14 +78,14 @@ export default function GoogleDriveAction({ steps }: Props) {
   const router = useRouter();
   const path = `/workflows/${workFlowSegment}?step=${steps}`;
 
-  const [action, setAction] = useState<GoogleDriveAction | "">("");
-  const [fileId, setFileId] = useState<string>("");
-  const [fileName, setFileName] = useState<string>("");
-  const [folderName, setFolderName] = useState<string>("");
-  const [fileContent, setFileContent] = useState<string>("");
-  const [sourceFolderId, setSourceFolderId] = useState<string>("");
-  const [destinationFolderId, setDestinationFolderId] = useState<string>("");
-  const [query, setQuery] = useState<string>("");
+  const [action, setAction] = useState<GoogleDriveAction | ''>('');
+  const [fileId, setFileId] = useState<string>('');
+  const [fileName, setFileName] = useState<string>('');
+  const [folderName, setFolderName] = useState<string>('');
+  const [fileContent, setFileContent] = useState<string>('');
+  const [sourceFolderId, setSourceFolderId] = useState<string>('');
+  const [destinationFolderId, setDestinationFolderId] = useState<string>('');
+  const [query, setQuery] = useState<string>('');
   const [isPublic, setIsPublic] = useState<boolean>(false);
 
   return (
@@ -122,10 +122,10 @@ export default function GoogleDriveAction({ steps }: Props) {
             </Select>
           </div>
 
-          {(action === "copyFile" ||
-            action === "deleteFile" ||
-            action === "replaceFile" ||
-            action === "updateName") && (
+          {(action === 'copyFile' ||
+            action === 'deleteFile' ||
+            action === 'replaceFile' ||
+            action === 'updateName') && (
             <div>
               <Label htmlFor="fileId" className="text-lg font-semibold">
                 File ID:
@@ -140,10 +140,10 @@ export default function GoogleDriveAction({ steps }: Props) {
             </div>
           )}
 
-          {(action === "createFile" ||
-            action === "createFolder" ||
-            action === "updateName" ||
-            action === "uploadFile") && (
+          {(action === 'createFile' ||
+            action === 'createFolder' ||
+            action === 'updateName' ||
+            action === 'uploadFile') && (
             <div>
               <Label htmlFor="fileName" className="text-lg font-semibold">
                 File/Folder Name:
@@ -158,7 +158,7 @@ export default function GoogleDriveAction({ steps }: Props) {
             </div>
           )}
 
-          {action === "createFile" && (
+          {action === 'createFile' && (
             <div>
               <Label htmlFor="fileContent" className="text-lg font-semibold">
                 File Content:
@@ -173,7 +173,7 @@ export default function GoogleDriveAction({ steps }: Props) {
             </div>
           )}
 
-          {action === "moveFile" && (
+          {action === 'moveFile' && (
             <>
               <div>
                 <Label
@@ -208,7 +208,7 @@ export default function GoogleDriveAction({ steps }: Props) {
             </>
           )}
 
-          {action === "retrieveFiles" && (
+          {action === 'retrieveFiles' && (
             <div>
               <Label htmlFor="query" className="text-lg font-semibold">
                 Query:
@@ -223,7 +223,7 @@ export default function GoogleDriveAction({ steps }: Props) {
             </div>
           )}
 
-          {(action === "createFile" || action === "uploadFile") && (
+          {(action === 'createFile' || action === 'uploadFile') && (
             <div className="flex items-center space-x-2">
               <Switch
                 id="public"

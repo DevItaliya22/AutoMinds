@@ -1,29 +1,29 @@
-import { Database, Github, Mailbox } from "lucide-react";
-import { Connection } from "./types";
+import { Database, Github, Mailbox } from 'lucide-react';
+import { Connection } from './types';
 
 export const CONNECTIONS: Connection[] = [
-    {
-      title: 'Google',
-      description: 'Connect your google drive to listen to folder changes',
-      image: '/google.png'
-    },
-    // {
-    //   title: 'Discord',
-    //   description: 'Connect your discord to send notification and messages',
-    //   image: '/discord.png'
-    // },
-    // {
-    //   title: 'Notion',
-    //   description: 'Create entries in your notion dashboard and automate tasks.',
-    //   image: '/notion.png',
-    // },
-    {
-      title: 'Github',
-      description:
-        'Use github to check for multiple things like PRs, issues, etc.',
-      image: '/github.png'
-    }
-]
+  {
+    title: 'Google',
+    description: 'Connect your google drive to listen to folder changes',
+    image: '/google.png',
+  },
+  // {
+  //   title: 'Discord',
+  //   description: 'Connect your discord to send notification and messages',
+  //   image: '/discord.png'
+  // },
+  // {
+  //   title: 'Notion',
+  //   description: 'Create entries in your notion dashboard and automate tasks.',
+  //   image: '/notion.png',
+  // },
+  {
+    title: 'Github',
+    description:
+      'Use github to check for multiple things like PRs, issues, etc.',
+    image: '/github.png',
+  },
+];
 
 export const MimeType = {
   TEXT: 'text/plain',
@@ -34,23 +34,24 @@ export const MimeType = {
   WORD: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
   GOOGLE_SHEET: 'application/vnd.google-apps.spreadsheet',
   EXCEL: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-  POWERPOINT: 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+  POWERPOINT:
+    'application/vnd.openxmlformats-officedocument.presentationml.presentation',
 };
 
-  // Here every node which have google as dependency is should be of type "Google"
+// Here every node which have google as dependency is should be of type "Google"
 type TriggerOrActionNodeReactType = {
-  type: 'Google' | 'Github'
-  label: string
-  icon: any
-}[]
+  type: 'Google' | 'Github';
+  label: string;
+  icon: any;
+}[];
 
-export const TriggerNodes : TriggerOrActionNodeReactType= [
+export const TriggerNodes: TriggerOrActionNodeReactType = [
   { type: 'Google', label: 'Google Drive Trigger', icon: Database },
   { type: 'Github', label: 'GitHub Trigger', icon: Github },
-]
-  // Here every node which have google as dependency is should be of type "Google"
-export  const ActionNodes : TriggerOrActionNodeReactType= [
+];
+// Here every node which have google as dependency is should be of type "Google"
+export const ActionNodes: TriggerOrActionNodeReactType = [
   { type: 'Google', label: 'Google Drive Action', icon: Database },
   { type: 'Github', label: 'GitHub Action', icon: Github },
-  { type: 'Google' , label: 'Gmail Action', icon: Mailbox  },
-]
+  { type: 'Google', label: 'Gmail Action', icon: Mailbox },
+];

@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-export async function POST(request:NextRequest) {
+export async function POST(request: NextRequest) {
   const body = await request.json();
 
   const { data: encodedData } = body.message;
-  
+
   // Decode the base64-encoded data
   const decodedData = Buffer.from(encodedData, 'base64').toString('utf-8');
 

@@ -1,25 +1,31 @@
 import { NextResponse } from 'next/server';
 
 export async function POST(req: Request) {
-    const eventType = req.headers.get('x-github-event');
-    
-    const rawBody = await req.text();
-    let payload;
+  const eventType = req.headers.get('x-github-event');
 
-    try {
-        payload = JSON.parse(rawBody);
-    } catch (error) {
-        console.error('Error parsing JSON:', error);
-        return NextResponse.json({ message: 'Invalid JSON payload' }, { status: 400 });
-    }
+  const rawBody = await req.text();
+  let payload;
 
-    // console.log('Parsed Payload:', payload);
-    // console.log(req.headers);
+  try {
+    payload = JSON.parse(rawBody);
+  } catch (error) {
+    console.error('Error parsing JSON:', error);
+    return NextResponse.json(
+      { message: 'Invalid JSON payload' },
+      { status: 400 },
+    );
+  }
 
-    if (eventType) {
-        console.log(eventType);
-        return NextResponse.json({ message: 'Event received', eventType });
-    }
+  // console.log('Parsed Payload:', payload);
+  // console.log(req.headers);
 
-    return NextResponse.json({ message: 'Event type not found' }, { status: 400 });
+  if (eventType) {
+    console.log(eventType);
+    return NextResponse.json({ message: 'Event received', eventType });
+  }
+
+  return NextResponse.json(
+    { message: 'Event type not found' },
+    { status: 400 },
+  );
 }

@@ -1,14 +1,12 @@
 import { NextResponse } from 'next/server';
-import {  watchUser } from '@/app/api/google'; 
+import { watchUser } from '@/app/api/google';
 
 export async function POST(request: Request) {
-  
   const result = await watchUser();
 
   return NextResponse.json(result);
 }
 // to run this on prouction i hve to copy IAM and thisng on the AUTOMINDS server to zap-googlw-test IAM server , and make sure to add the service account to the project => gmail-api-push@system.gserviceaccount.com to the project with PUB/SUB PUBLISHER permission
-
 
 // Response: {
 //     config: {

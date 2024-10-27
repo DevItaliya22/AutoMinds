@@ -1,8 +1,8 @@
-'use client'
+'use client';
 
-import { Button } from "@/components/ui/button"
-import { ChromeIcon } from "lucide-react"
-import { signIn } from "next-auth/react"
+import { Button } from '@/components/ui/button';
+import { ChromeIcon } from 'lucide-react';
+import { signIn } from 'next-auth/react';
 
 export default function Signin() {
   return (
@@ -10,11 +10,19 @@ export default function Signin() {
       <div className="flex-1 flex flex-col items-center justify-center px-4 py-12 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-md space-y-6 text-center">
           <div>
-            <h1 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">Sign Up or Sign In</h1>
-            <p className="mt-2 text-purple-300">Create an account or Login to get started with AutoMinds</p>
+            <h1 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
+              Sign Up or Sign In
+            </h1>
+            <p className="mt-2 text-purple-300">
+              Create an account or Login to get started with AutoMinds
+            </p>
           </div>
           <div className="grid gap-2">
-            <Button variant="outline" className="flex items-center justify-center gap-2 bg-purple-900 text-white border-purple-700 hover:bg-purple-800 hover:text-purple-100" onClick={()=>signIn("google")}>
+            <Button
+              variant="outline"
+              className="flex items-center justify-center gap-2 bg-purple-900 text-white border-purple-700 hover:bg-purple-800 hover:text-purple-100"
+              onClick={() => signIn('google')}
+            >
               <ChromeIcon className="h-5 w-5" />
               Sign up with Google
             </Button>
@@ -22,9 +30,19 @@ export default function Signin() {
         </div>
       </div>
       <div className="flex-1 relative overflow-hidden bg-transparent">
-        <svg className="absolute inset-0 w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
+        <svg
+          className="absolute inset-0 w-full h-full"
+          viewBox="0 0 100 100"
+          preserveAspectRatio="none"
+        >
           <defs>
-            <linearGradient id="aurora-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+            <linearGradient
+              id="aurora-gradient"
+              x1="0%"
+              y1="0%"
+              x2="100%"
+              y2="0%"
+            >
               <stop offset="0%" stopColor="#4B0082" />
               <stop offset="50%" stopColor="#8A2BE2" />
               <stop offset="100%" stopColor="#9400D3" />
@@ -65,10 +83,15 @@ export default function Signin() {
       </div>
       <style jsx>{`
         @keyframes aurora-wave {
-          0%, 100% { transform: scaleX(1) translateX(0); }
-          50% { transform: scaleX(1.5) translateX(10px); }
+          0%,
+          100% {
+            transform: scaleX(1) translateX(0);
+          }
+          50% {
+            transform: scaleX(1.5) translateX(10px);
+          }
         }
       `}</style>
     </div>
-  )
+  );
 }

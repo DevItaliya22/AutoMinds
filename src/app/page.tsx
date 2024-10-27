@@ -1,5 +1,5 @@
-import { LampComponent } from '@/components/landing/lamp'
-import Navbar from '@/components/landing/navbar'
+import { LampComponent } from '@/components/landing/lamp';
+import Navbar from '@/components/landing/navbar';
 
 export default function Home() {
   return (
@@ -9,5 +9,5 @@ export default function Home() {
         <LampComponent />
       </section>
     </main>
-  )
+  );
 }

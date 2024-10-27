@@ -1,7 +1,7 @@
-import { AuthOptions } from "next-auth";
+import { AuthOptions } from 'next-auth';
 import GoogleProvider from 'next-auth/providers/google';
-import prisma from "./db";
-import axios from "axios";
+import prisma from './db';
+import axios from 'axios';
 
 function isAccessTokenExpired(expirationTime: Date) {
   const currentTime = new Date();
@@ -15,20 +15,24 @@ function isAccessTokenExpired(expirationTime: Date) {
 
 async function refreshAccessToken(token: any) {
   try {
-    const response = await axios.post('https://oauth2.googleapis.com/token', null, {
-      params: {
-        client_id: process.env.GOOGLE_CLIENT_ID,
-        client_secret: process.env.GOOGLE_CLIENT_SECRET,
-        refresh_token: token.refreshToken,
-        grant_type: 'refresh_token',
+    const response = await axios.post(
+      'https://oauth2.googleapis.com/token',
+      null,
+      {
+        params: {
+          client_id: process.env.GOOGLE_CLIENT_ID,
+          client_secret: process.env.GOOGLE_CLIENT_SECRET,
+          refresh_token: token.refreshToken,
+          grant_type: 'refresh_token',
+        },
       },
-    });
+    );
 
     const refreshedTokens = response.data;
 
-  // console.log('refresh token ======================================================');
-  //   console.log('Refreshed Tokens:', refreshedTokens);
-  // console.log('refresh token ======================================================');
+    // console.log('refresh token ======================================================');
+    //   console.log('Refreshed Tokens:', refreshedTokens);
+    // console.log('refresh token ======================================================');
 
     const user = await prisma.user.findUnique({
       where: {
@@ -46,7 +50,9 @@ async function refreshAccessToken(token: any) {
       },
       data: {
         GoogleAccessToken: refreshedTokens.access_token,
-        GoogleAccessTokenExpireAt: new Date(Date.now() + refreshedTokens.expires_in * 1000) // Store as DateTime
+        GoogleAccessTokenExpireAt: new Date(
+          Date.now() + refreshedTokens.expires_in * 1000,
+        ), // Store as DateTime
       },
     });
 
@@ -72,8 +78,9 @@ export const authOptions: AuthOptions = {
       clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
       authorization: {
         params: {
-          scope: 'openid email profile https://www.googleapis.com/auth/gmail.readonly https://www.googleapis.com/auth/gmail.send https://www.googleapis.com/auth/drive https://www.googleapis.com/auth/classroom.courses.readonly https://www.googleapis.com/auth/classroom.rosters https://www.googleapis.com/auth/spreadsheets https://www.googleapis.com/auth/gmail.modify https://mail.google.com/',
-          access_type: 'offline', 
+          scope:
+            'openid email profile https://www.googleapis.com/auth/gmail.readonly https://www.googleapis.com/auth/gmail.send https://www.googleapis.com/auth/drive https://www.googleapis.com/auth/classroom.courses.readonly https://www.googleapis.com/auth/classroom.rosters https://www.googleapis.com/auth/spreadsheets https://www.googleapis.com/auth/gmail.modify https://mail.google.com/',
+          access_type: 'offline',
         },
       },
     }),
@@ -122,7 +129,7 @@ export const authOptions: AuthOptions = {
         });
       }
       if (isAccessTokenExpired(new Date(token.accessTokenExpires))) {
-        console.log("Going to find new accesstoken using refresh token");
+        console.log('Going to find new accesstoken using refresh token');
         return refreshAccessToken(token);
       }
       return token;

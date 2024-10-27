@@ -1,37 +1,37 @@
-"use server";
-import prisma from "@/lib/db";
-import { getServerSession } from "next-auth";
+'use server';
+import prisma from '@/lib/db';
+import { getServerSession } from 'next-auth';
 
-export default async function getConnections(){
-    const session = await getServerSession();
-    const arr:string[] = [];
-    
-    if(!session || !session.user?.email){
-        return null;
-    }
+export default async function getConnections() {
+  const session = await getServerSession();
+  const arr: string[] = [];
 
-    const user = await prisma.user.findUnique({
-        where: {
-            email: session.user.email,
-        },
-    });
+  if (!session || !session.user?.email) {
+    return null;
+  }
 
-    if(!user) return arr;
+  const user = await prisma.user.findUnique({
+    where: {
+      email: session.user.email,
+    },
+  });
 
-    const accessToken = await prisma.accessToken.findUnique({
-        where :{
-            userId: user.id
-        }
-    })
+  if (!user) return arr;
 
-    if(!accessToken) return arr;
+  const accessToken = await prisma.accessToken.findUnique({
+    where: {
+      userId: user.id,
+    },
+  });
 
-    if(accessToken.GoogleAccessToken !== ""){
-        arr.push("Google");
-    }
-    if(accessToken.GithubAccessToken !== ""){
-        arr.push("Github");
-    }
+  if (!accessToken) return arr;
 
-    return arr;
+  if (accessToken.GoogleAccessToken !== '') {
+    arr.push('Google');
+  }
+  if (accessToken.GithubAccessToken !== '') {
+    arr.push('Github');
+  }
+
+  return arr;
 }

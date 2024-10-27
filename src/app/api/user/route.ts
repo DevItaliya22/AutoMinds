@@ -10,18 +10,19 @@ export async function POST(req: Request) {
     };
 
     const users = await prisma.user.findMany({
-        cacheStrategy : {
-            ttl: 60,
-            swr: 60
-        }
-    })
+      cacheStrategy: {
+        ttl: 60,
+        swr: 60,
+      },
+    });
     console.log('User created:', users);
-    
+
     return NextResponse.json(users);
   } catch (error) {
     console.error('Error creating user:', error);
-    return NextResponse.json({ error: 'Failed to create user' }, { status: 500 });
+    return NextResponse.json(
+      { error: 'Failed to create user' },
+      { status: 500 },
+    );
   }
 }
-
-

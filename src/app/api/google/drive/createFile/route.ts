@@ -1,6 +1,6 @@
-"use server"
+'use server';
 import { NextResponse } from 'next/server';
-import { createFile } from '@/app/api/google';  
+import { createFile } from '@/app/api/google';
 
 export async function POST(req: Request) {
   try {
@@ -13,7 +13,10 @@ export async function POST(req: Request) {
 
     return NextResponse.json(response);
   } catch (error) {
-    return NextResponse.json({ error: 'Failed to create file' }, { status: 500 });
+    return NextResponse.json(
+      { error: 'Failed to create file' },
+      { status: 500 },
+    );
   }
 }
 // const data = {
