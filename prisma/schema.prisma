@@ -71,12 +71,16 @@ model Node {
   workerType    WorkerType //Trigger or Action
   positionX     Float
   positionY     Float
+  googleNode    GoogleNode? 
+  githubNode    GithubNode?
+  googleNodeId  String?
+  githubNodeId  String?
 }
 
 model GoogleNode {
   id            String   @id @default(uuid())
-  NodeId        String
-
+  nodeId        String   @unique
+  node          Node     @relation(fields: [nodeId], references: [id])
   isTrigger     Boolean
   ServiceName   ServiceName
 
@@ -105,7 +109,8 @@ model GoogleNode {
 
 model GithubNode { 
   id            String   @id @default(uuid())
-  NodeId        String
+  nodeId        String  @unique
+    node          Node     @relation(fields: [nodeId], references: [id])
 
   // Github Trigger Info
   GithubTriggersWhen        String? // newIssue , newPR , newPush , newGist etc 

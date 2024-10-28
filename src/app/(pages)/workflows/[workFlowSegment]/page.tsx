@@ -1,5 +1,4 @@
 'use client';
-
 import { getNodes } from '@/app/actions/getNodes';
 import GoogleDriveTrigger from '@/components/forms/drive/trigger';
 import GitHubAction from '@/components/forms/github/node';
@@ -88,7 +87,7 @@ function WorkFlowSegment() {
   return (
     <div className="flex flex-col min-h-screen p-6">
       <div className="flex justify-between mb-6">
-        <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+        <motion.div whileTap={{ scale: 0.95 }}>
           <Button
             variant="outline"
             onClick={() => router.push("/workflows")}
@@ -97,7 +96,7 @@ function WorkFlowSegment() {
             Workflow page 
           </Button>
         </motion.div>
-        <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+        <motion.div whileTap={{ scale: 0.95 }}>
           <Button
             variant="outline"
             onClick={() => router.push(editorPath)}
