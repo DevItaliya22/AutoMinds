@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Database, Github, Mail, Search, Loader2 } from 'lucide-react';
 import { TriggerNodes, ActionNodes } from '@/lib/constants';
 import { useRouter } from 'next/navigation';
+import { useWorkflowStore } from '@/store/Editing';
 
 type SidebarProps = {
   handleSave: () => void;
@@ -43,6 +44,9 @@ export default function Sidebar({
   const filteredNodes = nodesToShow.filter((node) =>
     node.label.toLowerCase().includes(searchTerm.toLowerCase()),
   );
+  const { isEditing } = useWorkflowStore((state:any) => ({
+    isEditing: state.isEditing,
+  }));
 
   const handleExitEditor = () => {
     router.push(workFlowPath);
@@ -66,7 +70,7 @@ export default function Sidebar({
       <CardHeader>
         <CardTitle>
           <div className="border-t border-b py-4 flex gap-5">
-            <Button onClick={handleSave} disabled={isSaving || isFetching}>
+            <Button onClick={handleSave} disabled={isSaving || isFetching || isEditing}>
               {isSaving ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -78,7 +82,7 @@ export default function Sidebar({
             </Button>
             <Button
               onClick={handleExitEditor}
-              disabled={isSaving || isFetching}
+              disabled={isSaving || isFetching || isEditing }
             >
               <>Exit Editor</>
             </Button>
