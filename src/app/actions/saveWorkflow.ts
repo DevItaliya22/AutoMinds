@@ -12,6 +12,7 @@ type Nodes = {
   positionX: number;
   positionY: number;
 }[];
+
 type Edges = {
   id: string;
   sourceId: string;
@@ -42,8 +43,54 @@ export async function saveWorkflow(data: {
 
   if (!workflow) return 'Workflow not found';
 
+  const deleteNodes : any = [];
+  const deleteEdges : any = [];
+
+  for (const node of workflow.nodes) {
+    if (!data.nodes.find((n) => n.id === node.id)) {
+      deleteNodes.push({id : node.id, type : node.type});
+    }
+  }
+
+  for(const node of deleteNodes){
+    if(node.type === "Google"){
+      const deletedGoogleNode = await prisma.googleNode.delete({
+        where : {
+          nodeId : node.id
+        }
+      })
+    } else {
+      const deletedGithubNode = await prisma.githubNode.delete({
+        where : {
+          nodeId : node.id
+        }
+      })
+    }
+
+    const deleted =  await prisma.node.delete({
+      where : {
+        id : node.id,
+        workerType : WorkerType.Action
+      }
+    })
+    console.log(deleted);
+  }
+
+  for (const edge of workflow.edges) {
+    if (deleteNodes.some((node:any) => node.id === edge.sourceId) || deleteNodes.some((node:any) => node.id === edge.targetId)) {
+      deleteEdges.push(edge.id);
+    }
+  }
+  
+  for(const id of deleteEdges){
+    await prisma.edge.delete({
+      where : {
+        id
+      }
+    })
+  }
+
   for (const dataNode of data.nodes) {
-    // console.log(dataNode);
     await prisma.node.upsert({
       where: {
         id: dataNode.id.includes('-') ? dataNode.id.split('-')[1] : dataNode.id,
@@ -82,7 +129,6 @@ export async function saveWorkflow(data: {
   }
 
   for (const dataEdge of data.edges) {
-    // console.log(dataEdge);
     await prisma.edge.upsert({
       where: { id: dataEdge.id },
       create: {

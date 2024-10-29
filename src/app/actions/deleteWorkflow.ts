@@ -20,21 +20,36 @@ export async function deleteWorkflow(id: string): Promise<string> {
   }
 
   const transaction = await prisma.$transaction(async (tx) => {
+    await tx.googleNode.deleteMany({
+      where: {
+        node: { workflowId: id },
+      },
+    });
+
+    await tx.githubNode.deleteMany({
+      where: {
+        node: { workflowId: id },
+      },
+    });
+
     await tx.edge.deleteMany({
       where: {
         workflowId: id,
       },
     });
+
     await tx.node.deleteMany({
       where: {
         workflowId: id,
       },
     });
+
     await tx.workflow.delete({
       where: {
         id,
       },
     });
+
     return 'Transaction complete';
   });
 
