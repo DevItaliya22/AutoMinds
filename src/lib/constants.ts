@@ -39,19 +39,22 @@ export const MimeType = {
 };
 
 // Here every node which have google as dependency is should be of type "Google"
+
 type TriggerOrActionNodeReactType = {
   type: 'Google' | 'Github';
+  subType: 'Google Drive' | 'Gmail' | 'Github';
   label: string;
   icon: any;
 }[];
 
 export const TriggerNodes: TriggerOrActionNodeReactType = [
-  { type: 'Google', label: 'Google Drive Trigger', icon: Database },
-  { type: 'Github', label: 'GitHub Trigger', icon: Github },
+  { type: 'Google', subType: 'Google Drive', label: 'Google Drive Trigger', icon: Database },
+  { type: 'Github', subType: 'Github', label: 'GitHub Trigger', icon: Github },
+  { type: 'Google', subType: 'Gmail', label: 'Gmail Trigger', icon: Mailbox },
 ];
-// Here every node which have google as dependency is should be of type "Google"
+
 export const ActionNodes: TriggerOrActionNodeReactType = [
-  { type: 'Google', label: 'Google Drive Action', icon: Database },
-  { type: 'Github', label: 'GitHub Action', icon: Github },
-  { type: 'Google', label: 'Gmail Action', icon: Mailbox },
+  { type: 'Google', subType: 'Google Drive', label: 'Google Drive Action', icon: Database },
+  { type: 'Github', subType: 'Github', label: 'GitHub Action', icon: Github },
+  { type: 'Google', subType: 'Gmail', label: 'Gmail Action', icon: Mailbox },
 ];

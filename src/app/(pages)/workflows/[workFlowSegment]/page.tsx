@@ -1,11 +1,15 @@
 'use client';
+
 import { getNodes } from '@/app/actions/getNodes';
 import GoogleDriveTrigger from '@/components/forms/drive/trigger';
 import GitHubAction from '@/components/forms/github/node';
 import GitHubTrigger from '@/components/forms/github/trigger';
+import GoogleDriveAction from '@/components/forms/drive/node';
+import GmailTrigger from '@/components/forms/gmail/trigger';
+import GmailActions from '@/components/forms/gmail/node';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
-import { Node } from '@prisma/client';
+import { Node as PrismaNode, GoogleNode, GithubNode } from '@prisma/client';
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import {
@@ -17,7 +21,11 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { motion } from 'framer-motion';
-import GoogleDriveAction from '@/components/forms/drive/node';
+
+type NodeWithRelations = PrismaNode & {
+  googleNode?: GoogleNode | null;
+  githubNode?: GithubNode | null;
+};
 
 function WorkFlowSegment() {
   const { toast } = useToast();
@@ -26,7 +34,7 @@ function WorkFlowSegment() {
   const searchParams = useSearchParams();
   const currentStep = parseInt(searchParams.get('step') || '1', 10);
   const editorPath = `/workflows/editor/${workFlowSegment}`;
-  const [nodes, setNodes] = useState<Node[] | null>([]);
+  const [nodes, setNodes] = useState<NodeWithRelations[] | null>([]);
   const [isFetching, setIsFetching] = useState(false);
   const [isPublishModalOpen, setIsPublishModalOpen] = useState(false);
 
@@ -56,11 +64,20 @@ function WorkFlowSegment() {
 
     switch (node.type) {
       case 'Google':
-        return node.workerType === 'Trigger' ? (
-          <GoogleDriveTrigger steps={currentStep + 1} />
-        ) : (
-          <GoogleDriveAction steps={currentStep + 1} />
-        );
+        if (node.googleNode?.ServiceName === 'GoogleDrive') {
+          return node.workerType === 'Trigger' ? (
+            <GoogleDriveTrigger steps={currentStep + 1} />
+          ) : (
+            <GoogleDriveAction steps={currentStep + 1} />
+          );
+        } else if (node.googleNode?.ServiceName === 'GoogleMail') {
+          return node.workerType === 'Trigger' ? (
+            <GmailTrigger steps={currentStep + 1} />
+          ) : (
+            <GmailActions steps={currentStep + 1} />
+          );
+        }
+        return null;
       case 'Github':
         return node.workerType === 'Trigger' ? (
           <GitHubTrigger steps={currentStep + 1} />
@@ -77,7 +94,6 @@ function WorkFlowSegment() {
   };
 
   const handlePublish = () => {
-    // Add your publish logic here
     setIsPublishModalOpen(false);
     router.push('/workflows');
   };

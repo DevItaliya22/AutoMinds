@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Input } from '@/components/ui/input';
-import { Database, Github, Mailbox, Search, Loader2 } from 'lucide-react';
+import { Database, Github, Mail, Search, Loader2 } from 'lucide-react';
 import { TriggerNodes, ActionNodes } from '@/lib/constants';
 import { useRouter } from 'next/navigation';
 
@@ -29,8 +29,10 @@ export default function Sidebar({
   const onDragStart = (
     event: DragEvent<HTMLButtonElement>,
     nodeType: string,
+    nodeSubType: string
   ) => {
     event.dataTransfer.setData('application/reactflow', nodeType);
+    event.dataTransfer.setData('application/nodetype', nodeSubType);
     event.dataTransfer.effectAllowed = 'move';
   };
 
@@ -44,6 +46,19 @@ export default function Sidebar({
 
   const handleExitEditor = () => {
     router.push(workFlowPath);
+  };
+
+  const getIcon = (type: string) => {
+    switch (type) {
+      case 'Google Drive':
+        return <Database className="mr-2 h-4 w-4" />;
+      case 'Gmail':
+        return <Mail className="mr-2 h-4 w-4" />;
+      case 'Github':
+        return <Github className="mr-2 h-4 w-4" />;
+      default:
+        return null;
+    }
   };
 
   return (
@@ -91,11 +106,12 @@ export default function Sidebar({
                 key={node.type}
                 variant="outline"
                 className="w-full justify-start"
-                onDragStart={(event) => onDragStart(event, node.type)}
+                onDragStart={(event) => onDragStart(event, node.type, node.subType)}
                 draggable
                 disabled={isFetching}
               >
-                <node.icon className="mr-2 h-4 w-4" /> {node.label}
+                {getIcon(node.subType)}
+                {node.label}
               </Button>
             ))}
           </div>

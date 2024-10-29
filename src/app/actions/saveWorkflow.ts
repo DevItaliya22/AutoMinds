@@ -1,6 +1,6 @@
 'use server';
 import prisma from '@/lib/db';
-import { Edge, Node, NodeType, WorkerType } from '@prisma/client';
+import { Edge, Node, NodeType, ServiceName, WorkerType } from '@prisma/client';
 import { getServerSession } from 'next-auth';
 
 type Nodes = {
@@ -52,7 +52,7 @@ export async function saveWorkflow(data: {
         id: dataNode.id.includes('-') ? dataNode.id.split('-')[1] : dataNode.id,
         name: dataNode.name,
         description: dataNode.description,
-        type: dataNode.id.includes('Google')
+        type: dataNode.id.includes('Google') || dataNode.id.includes('Gmail')
           ? NodeType.Google
           : NodeType.Github,
         workflowId: data.workflowId,
@@ -62,6 +62,17 @@ export async function saveWorkflow(data: {
           dataNode.workerType.toLowerCase() === 'trigger'
             ? WorkerType.Trigger
             : WorkerType.Action,
+        googleNode : dataNode.id.includes('Google') || dataNode.id.includes('Gmail') ? {
+          create : {
+            ServiceName : dataNode.name.includes('Drive') ? ServiceName.GoogleDrive : ServiceName.GoogleMail,
+            isTrigger : dataNode.workerType.toLowerCase() === 'trigger' ? true : false,
+          }
+        } : undefined ,
+        githubNode : dataNode.id.includes('Github') ? {
+          create : {
+              isTrigger : dataNode.workerType.toLowerCase() === 'trigger' ? true : false,
+          }
+        } : undefined
       },
       update: {
         positionX: dataNode.positionX,

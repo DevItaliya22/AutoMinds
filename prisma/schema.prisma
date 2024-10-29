@@ -73,8 +73,6 @@ model Node {
   positionY     Float
   googleNode    GoogleNode? 
   githubNode    GithubNode?
-  googleNodeId  String?
-  githubNodeId  String?
 }
 
 model GoogleNode {
@@ -110,7 +108,8 @@ model GoogleNode {
 model GithubNode { 
   id            String   @id @default(uuid())
   nodeId        String  @unique
-    node          Node     @relation(fields: [nodeId], references: [id])
+  isTrigger     Boolean
+  node          Node     @relation(fields: [nodeId], references: [id])
 
   // Github Trigger Info
   GithubTriggersWhen        String? // newIssue , newPR , newPush , newGist etc 
@@ -144,6 +143,7 @@ enum ServiceName {
   GoogleClassroom
   GoogleForms
 }
+
 enum NodeType {
   Google
   Github 

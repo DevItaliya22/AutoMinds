@@ -7,21 +7,22 @@ import {
   CardDescription,
 } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Database, Github, Inbox, PlusCircle } from 'lucide-react';
+import { Database, Github, Mail, PlusCircle } from 'lucide-react';
 import clsx from 'clsx';
 
 type CustomNodeData = {
   label: string;
   type: string;
   description: string;
-  nodeType: 'Google' | 'Github';
+  nodeType: 'Google Drive' | 'Gmail' | 'Github';
 };
 
 export default function CustomWorkflowNode({ data }: { data: CustomNodeData }) {
   const nodeId = useNodeId();
 
   const logo = useMemo(() => {
-    if (data.nodeType === 'Google') return <Database />;
+    if (data.nodeType === 'Google Drive') return <Database />;
+    if (data.nodeType === 'Gmail') return <Mail />;
     if (data.nodeType === 'Github') return <Github />;
     return <PlusCircle />;
   }, [data.nodeType]);

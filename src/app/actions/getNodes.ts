@@ -1,5 +1,6 @@
 'use server';
 import prisma from '@/lib/db';
+import { TrendingUpDown } from 'lucide-react';
 import { getServerSession } from 'next-auth';
 
 export async function getNodes({ workflowId }: { workflowId: string }) {
@@ -23,13 +24,18 @@ export async function getNodes({ workflowId }: { workflowId: string }) {
       id: workflowId,
     },
     include: {
-      nodes: true,
+      nodes: {
+        include : {
+          googleNode : true,
+          githubNode : true
+        }
+      },
     },
   });
 
   if (!workFlow) {
     return null;
   }
-
+  // console.log(workFlow.nodes);
   return workFlow.nodes;
 }

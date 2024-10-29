@@ -102,18 +102,19 @@ export default function EditorContent() {
   const onDrop = useCallback(
     (event: DragEvent<HTMLDivElement>) => {
       event.preventDefault();
-
+  
       const type = event.dataTransfer.getData('application/reactflow');
-
+      const nodeSubType = event.dataTransfer.getData('application/nodetype');
+  
       if (typeof type === 'undefined' || !type) {
         return;
       }
-
+  
       const position = reactFlowInstance.project({
         x: event.clientX - 250,
         y: event.clientY,
       });
-
+  
       if (nodes.length === 0 && type !== 'Google' && type !== 'Github') {
         toast({
           title: 'Error',
@@ -122,19 +123,19 @@ export default function EditorContent() {
         });
         return;
       }
-
+  
       const newNode = {
-        id: `${type}-${Date.now()}`,
+        id: `${nodeSubType}-${Date.now()}`,
         type: 'customNode',
         position,
         data: {
-          label: `${type} ${nodes.length === 0 ? 'Trigger' : 'Action'}`,
+          label: `${nodeSubType} ${nodes.length === 0 ? 'Trigger' : 'Action'}`,
           type: nodes.length === 0 ? 'Trigger' : 'Action',
-          description: `This is a ${nodes.length === 0 ? 'trigger' : 'action'} node for ${type}.`,
-          nodeType: type,
+          description: `This is a ${nodes.length === 0 ? 'trigger' : 'action'} node for ${nodeSubType}.`,
+          nodeType: nodeSubType,
         },
       };
-
+  
       setNodes((nds) => nds.concat(newNode));
     },
     [reactFlowInstance, setNodes, nodes, toast],
