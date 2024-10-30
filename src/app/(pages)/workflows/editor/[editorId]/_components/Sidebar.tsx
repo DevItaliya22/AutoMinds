@@ -7,8 +7,10 @@ import { Database, Github, Mail, Search, Loader2 } from 'lucide-react';
 import { TriggerNodes, ActionNodes } from '@/lib/constants';
 import { useRouter } from 'next/navigation';
 import { useWorkflowStore } from '@/store/Editing';
+import { useIsWorkflowSavedStore, WorkflowState } from '@/store/Saving';
 
 type SidebarProps = {
+  handleExit: (exitPath:string) => void;
   handleSave: () => void;
   hasTrigger: boolean;
   searchTerm: string;
@@ -19,6 +21,7 @@ type SidebarProps = {
 };
 
 export default function Sidebar({
+  handleExit,
   handleSave,
   hasTrigger,
   searchTerm,
@@ -30,13 +33,19 @@ export default function Sidebar({
   const onDragStart = (
     event: DragEvent<HTMLButtonElement>,
     nodeType: string,
-    nodeSubType: string
+    nodeSubType: string,
   ) => {
     event.dataTransfer.setData('application/reactflow', nodeType);
     event.dataTransfer.setData('application/nodetype', nodeSubType);
     event.dataTransfer.effectAllowed = 'move';
   };
 
+  const { isSaved, setIsSaved } = useIsWorkflowSavedStore(
+    (state: WorkflowState) => ({
+      isSaved: state.isSaved,
+      setIsSaved: state.setIsSaved,
+    }),
+  );
   const router = useRouter();
   const triggerNodes = TriggerNodes;
   const actionNodes = ActionNodes;
@@ -44,12 +53,12 @@ export default function Sidebar({
   const filteredNodes = nodesToShow.filter((node) =>
     node.label.toLowerCase().includes(searchTerm.toLowerCase()),
   );
-  const { isEditing } = useWorkflowStore((state:any) => ({
+  const { isEditing } = useWorkflowStore((state: any) => ({
     isEditing: state.isEditing,
   }));
 
   const handleExitEditor = () => {
-    router.push(workFlowPath);
+    handleExit(workFlowPath);
   };
 
   const getIcon = (type: string) => {
@@ -70,7 +79,10 @@ export default function Sidebar({
       <CardHeader>
         <CardTitle>
           <div className="border-t border-b py-4 flex gap-5">
-            <Button onClick={handleSave} disabled={isSaving || isFetching || isEditing}>
+            <Button
+              onClick={handleSave}
+              disabled={isSaving || isFetching || isEditing}
+            >
               {isSaving ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -82,9 +94,9 @@ export default function Sidebar({
             </Button>
             <Button
               onClick={handleExitEditor}
-              disabled={isSaving || isFetching || isEditing }
+              disabled={isSaving || isFetching || isEditing}
             >
-              <>Exit Editor</>
+              <>{isSaved ? 'true' : 'false'} </>
             </Button>
           </div>
         </CardTitle>
@@ -110,7 +122,9 @@ export default function Sidebar({
                 key={node.type}
                 variant="outline"
                 className="w-full justify-start"
-                onDragStart={(event) => onDragStart(event, node.type, node.subType)}
+                onDragStart={(event) =>
+                  onDragStart(event, node.type, node.subType)
+                }
                 draggable
                 disabled={isFetching}
               >
