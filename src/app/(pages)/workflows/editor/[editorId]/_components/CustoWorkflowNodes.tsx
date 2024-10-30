@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Handle, Position, useNodeId, useReactFlow } from 'reactflow';
 import {
   Card,
@@ -20,6 +20,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import clsx from 'clsx';
 import { useWorkflowStore } from '@/store/Editing';
+import { useIsWorkflowSavedStore, WorkflowState } from '@/store/Saving';
 
 
 type CustomNodeData = {
@@ -36,13 +37,22 @@ export default function CustomWorkflowNode({ data }: { data: CustomNodeData }) {
   }));
   const nodeId = useNodeId();
   const { setNodes, setEdges } = useReactFlow();
-  // const [isEditing, setIsEditing] = useState(false);
+  const { isSaved, setIsSaved } = useIsWorkflowSavedStore(
+    (state: WorkflowState) => ({
+      isSaved: state.isSaved,
+      setIsSaved: state.setIsSaved,
+    }),
+  );
   const [editedLabel, setEditedLabel] = useState(data.label);
   const [editedDescription, setEditedDescription] = useState(data.description);
 
   const isValidEdit = () => {
     return editedLabel.trim() !== '' && editedDescription.trim() !== '';
   };
+
+  useEffect(()=>{
+    if(isEditing)setIsSaved(false)
+  },[isEditing])
 
   const logo = useMemo(() => {
     if (data.nodeType === 'Google Drive') return <Database className="h-6 w-6" />;
@@ -66,6 +76,7 @@ export default function CustomWorkflowNode({ data }: { data: CustomNodeData }) {
     }
     setNodes((nodes) => nodes.filter((node) => node.id !== nodeId));
     setEdges((edges) => edges.filter((edge) => edge.source !== nodeId && edge.target !== nodeId));
+    setIsSaved(false);
   };
 
   const handleEdit = () => {

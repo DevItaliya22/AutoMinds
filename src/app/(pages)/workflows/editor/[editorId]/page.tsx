@@ -20,12 +20,15 @@ import ReactFlow, {
   Edge,
 } from 'reactflow';
 import 'reactflow/dist/style.css';
-import { useParams, usePathname } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { useToast } from '@/hooks/use-toast';
 import { getNodesAndEdges } from '@/app/actions/getNodeAndEdges';
 import { saveWorkflow } from '@/app/actions/saveWorkflow';
 import CustomWorkflowNode from './_components/CustoWorkflowNodes';
 import Sidebar from './_components/Sidebar';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import { useIsWorkflowSavedStore } from '@/store/Saving';
 
 const nodeTypes = {
   customNode: CustomWorkflowNode,
@@ -33,6 +36,7 @@ const nodeTypes = {
 
 export default function EditorContent() {
   const { toast } = useToast();
+  const router = useRouter();
   const reactFlowInstance = useReactFlow();
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
@@ -40,7 +44,10 @@ export default function EditorContent() {
   const { editorId } = useParams<{ editorId: string }>();
   const [isSaving, setIsSaving] = useState(false);
   const [isFetching, setIsFetching] = useState(true);
+  const [isExitModalOpen, setIsExitModalOpen] = useState(false);
+  const [exitDestination, setExitDestination] = useState('');
   const workFlowPath = `/workflows/${editorId}`;
+  const { isSaved, setIsSaved } = useIsWorkflowSavedStore();
 
   useEffect(() => {
     const fetchWorkflowData = async () => {
@@ -89,8 +96,23 @@ export default function EditorContent() {
     fetchWorkflowData();
   }, [editorId, toast, setNodes, setEdges]);
 
+  useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      if (!isSaved) {
+        e.preventDefault();
+        e.returnValue = '';
+      }
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, [isSaved]);
+
   const onConnect = useCallback(
-    (params: Edge | Connection) => setEdges((eds) => addEdge(params, eds)),
+    (params: Edge | Connection) => {
+      setEdges((eds) => addEdge(params, eds));
+      setIsSaved(false);
+    },
     [setEdges],
   );
 
@@ -137,8 +159,9 @@ export default function EditorContent() {
       };
   
       setNodes((nds) => nds.concat(newNode));
+      setIsSaved(false);
     },
-    [reactFlowInstance, setNodes, nodes, toast],
+    [reactFlowInstance, setNodes, nodes, toast,setIsSaved],
   );
 
   const handleSave = async () => {
@@ -187,45 +210,84 @@ export default function EditorContent() {
         variant: 'destructive',
       });
     } finally {
+      setIsSaved(true);
       setIsSaving(false);
     }
   };
 
+  // use this function to handle exit
+  const handleExit = (destination: string) => {
+    if (isSaved) {
+      router.push(destination);
+    } else {
+      setExitDestination(destination);
+      setIsExitModalOpen(true);
+    }
+  };
+
+  const confirmExit = () => {
+    setIsExitModalOpen(false);
+    router.push(exitDestination);
+  };
+
   return (
-    <div className="h-[calc(100vh-64px)] w-full flex flex-col">
-      <div className="flex-grow flex">
-        <div className="flex-grow">
-          <ReactFlow
-            nodes={nodes}
-            edges={edges}
-            onNodesChange={onNodesChange}
-            onEdgesChange={onEdgesChange}
-            onConnect={onConnect}
-            onDragOver={onDragOver}
-            onDrop={onDrop}
-            nodeTypes={nodeTypes}
-            fitView
-          >
-            <Background />
-            <Controls className="top-2 left-2" />
-            <MiniMap
-              className="bottom-2 left-2 w-0"
-              pannable
-              zoomable
-              zoomStep={2}
-            />
-          </ReactFlow>
+    <div className="h-screen flex flex-col">
+      <div className="h-[calc(100vh-64px)] w-full flex flex-col">
+        <div className="flex-grow flex">
+          <div className="flex-grow">
+            <ReactFlow
+              nodes={nodes}
+              edges={edges}
+              onNodesChange={(changes) => {
+                onNodesChange(changes);
+              }}
+              onEdgesChange={(changes) => {
+                onEdgesChange(changes);
+              }}
+              onConnect={onConnect}
+              onDragOver={onDragOver}
+              onDrop={onDrop}
+              nodeTypes={nodeTypes}
+              fitView
+            >
+              <Background />
+              <Controls className="top-2 left-2" />
+              <MiniMap
+                className="bottom-2 left-2 w-0"
+                pannable
+                zoomable
+                zoomStep={2}
+              />
+            </ReactFlow>
+          </div>
+          <Sidebar
+            handleExit={handleExit}
+            handleSave={handleSave}
+            hasTrigger={nodes.length !== 0}
+            searchTerm={searchTerm}
+            setSearchTerm={setSearchTerm}
+            isSaving={isSaving}
+            isFetching={isFetching}
+            workFlowPath={workFlowPath}
+          />
         </div>
-        <Sidebar
-          handleSave={handleSave}
-          hasTrigger={nodes.length !== 0}
-          searchTerm={searchTerm}
-          setSearchTerm={setSearchTerm}
-          isSaving={isSaving}
-          isFetching={isFetching}
-          workFlowPath={workFlowPath}
-        />
       </div>
+      <Dialog open={isExitModalOpen} onOpenChange={setIsExitModalOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Unsaved Changes</DialogTitle>
+            <DialogDescription>
+              You have unsaved changes. Are you sure you want to leave?
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsExitModalOpen(false)}>
+              Cancel
+            </Button>
+            <Button onClick={confirmExit}>Leave</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
