@@ -13,10 +13,6 @@
 <!-- Todos -->  
 add confirmationw when user dont save workflow and try ton exit , points of exits are => from  navbar and exit Editor button and onCloseWindow 
 
-delete node feature , now we also on BE have to check that if numbeer of node coming from fe < database then user have deleted it , so hashset etc
-
-redirect user from /signin page if alreafy logge din 
-
 Hardes thing to implement is CTRL+Z thing as this undo redo cannot be achived without storing the complete state on zustand and so this would be probably the last thing to achieve 
 
 in /workflows , draft active and inactive thing is still baki , so when we publish , we have to make it active and then make than publish buttton to unpublish and there we will make it inactive  draft isfor editing thing only , then we will play with active  and inactive 
