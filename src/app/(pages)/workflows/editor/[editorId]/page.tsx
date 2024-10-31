@@ -49,6 +49,11 @@ export default function EditorContent() {
   const workFlowPath = `/workflows/${editorId}`;
   const { isSaved, setIsSaved } = useIsWorkflowSavedStore();
 
+
+  // useEffect(()=>{
+  //   setIsSaved(false);
+  // },[onNodesChange,onEdgesChange]);
+
   useEffect(() => {
     const fetchWorkflowData = async () => {
       setIsFetching(true);

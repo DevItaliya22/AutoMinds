@@ -11,6 +11,9 @@ import {
 } from '@/components/ui/tooltip';
 import Image from 'next/image';
 import getImageURL from '@/app/actions/getImage';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
+import { Button } from '../ui/button';
+import { useIsWorkflowSavedStore } from '@/store/Saving';
 
 const Header = () => {
   const [imageUrl, setImageUrl] = useState('');
@@ -21,6 +24,10 @@ const Header = () => {
   let formattedPath = path
     ? path.charAt(0).toUpperCase() + path.slice(1).toLowerCase()
     : '';
+  const [isExitModalOpen, setIsExitModalOpen] = useState(false);
+  const [exitDestination, setExitDestination] = useState('');
+  const { isSaved, setIsSaved } = useIsWorkflowSavedStore();
+
 
   if (pathname.includes('editor')) formattedPath = 'Editor';
 
@@ -34,12 +41,26 @@ const Header = () => {
     getImage();
   }, []);
 
+  const confirmExit = () => {
+    setIsExitModalOpen(false);
+    router.push(exitDestination);
+  };
+
+  const handleExit = (destination: string) => {
+    if (isSaved) {
+      router.push(destination);
+    } else {
+      setExitDestination(destination);
+      setIsExitModalOpen(true);
+    }
+  };
+
   return (
     <TooltipProvider>
       <header className="sticky top-0 z-10 w-full bg-background/50 backdrop-blur-lg border-b">
         <div className="container mx-auto px-4 py-2 flex items-center justify-between">
           <h1
-            onClick={() => router.push('/')}
+            onClick={() => handleExit('/')}
             className="text-2xl font-bold cursor-pointer text-primary"
           >
             Autominds
@@ -49,7 +70,7 @@ const Header = () => {
               {['Dashboard', 'Connections', 'Workflows'].map((item) => (
                 <button
                   key={item}
-                  onClick={() => router.push(`/${item.toLowerCase()}`)}
+                  onClick={() => handleExit(`/${item.toLowerCase()}`)}
                   className={`text-sm font-medium transition-colors hover:text-primary ${
                     formattedPath.toLowerCase() === item.toLowerCase()
                       ? 'text-primary'
@@ -83,6 +104,22 @@ const Header = () => {
           </Tooltip>
         </div>
       </header>
+      <Dialog open={isExitModalOpen} onOpenChange={setIsExitModalOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Unsaved Changes</DialogTitle>
+            <DialogDescription>
+              You have unsaved changes. Are you sure you want to leave?
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsExitModalOpen(false)}>
+              Cancel
+            </Button>
+            <Button onClick={confirmExit}>Leave</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </TooltipProvider>
   );
 };

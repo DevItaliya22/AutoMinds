@@ -78,7 +78,7 @@ export default function Sidebar({
     <Card className="w-64 h-auto border-l">
       <CardHeader>
         <CardTitle>
-          <div className="border-t border-b py-4 flex gap-5">
+          <div className="border-t border-b py-4 flex gap-5 flex-col">
             <Button
               onClick={handleSave}
               disabled={isSaving || isFetching || isEditing}
@@ -96,7 +96,7 @@ export default function Sidebar({
               onClick={handleExitEditor}
               disabled={isSaving || isFetching || isEditing}
             >
-              <>{isSaved ? 'true' : 'false'} </>
+              <>Exit Editor</>
             </Button>
           </div>
         </CardTitle>
