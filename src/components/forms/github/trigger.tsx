@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import {
@@ -12,6 +12,7 @@ import {
 } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
 import type { GitHubTrigger } from '@/lib/types';
+import axios from 'axios';
 
 interface TriggerOption {
   value: GitHubTrigger;
@@ -63,18 +64,34 @@ const triggerOptions: TriggerOption[] = [
 ];
 
 type Props = {
+  nodeId : string;
   steps: number;
 };
 
-export default function GitHubTrigger({ steps }: Props) {
+export default function GitHubTrigger({ steps,nodeId }: Props) {
   const { workFlowSegment } = useParams<{ workFlowSegment: string }>();
   const router = useRouter();
   const path = `/workflows/${workFlowSegment}?step=${steps}`;
 
   const [trigger, setTrigger] = useState<GitHubTrigger | ''>('');
   const [repository, setRepository] = useState<string>('');
+  const [userRepos,setUserRepos] = useState([]);
 
   const mockRepositories = ['user/repo1', 'user/repo2', 'organization/repo3'];
+
+  const handleClick = async() => {
+    const data = {
+      isTrigger : true ,
+      repository,
+      action : trigger
+    }
+
+    const res = await axios.post(`/api/github/${workFlowSegment}/${nodeId}`)
+
+    if(res.data.success){
+      router.push(path)
+    }
+  }
 
   return (
     <div className="bg-background p-6 md:p-12">
@@ -133,7 +150,7 @@ export default function GitHubTrigger({ steps }: Props) {
           <Button
             variant="default"
             className="w-full md:w-auto px-8 py-2 text-lg"
-            onClick={() => router.push(path)}
+            onClick={handleClick}
           >
             Save and Continue
           </Button>

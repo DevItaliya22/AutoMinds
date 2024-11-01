@@ -84,6 +84,7 @@ const actionOptions: ActionOption[] = [
 ];
 
 type Props = {
+  nodeId : string;
   steps: number;
 };
 

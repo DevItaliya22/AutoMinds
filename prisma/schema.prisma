@@ -101,7 +101,7 @@ model GoogleNode {
   GoogleDriveActionDestinationFolderId String? // this is the destination folder id for moveFile action
 
   // Google Mail Trigger Info
-  // Google Mail Action Inf
+  // Google Mail Action Info
 
 }
 
@@ -124,7 +124,7 @@ model GithubNode {
   GithubActionGistDescription String? // this is the content of the gist
   GithubActionGistName    String? // this is the name of the gist
   GithubActionGistBody    String? // this is the body of the gist
-  GitHubActionisPublic    String? // this is the title of the issue
+  GitHubActionisPublic    Boolean? // this is the title of the issue
   GithubActionIssueTitle  String? // this is the title of the issue
   GithubActionIssueBody   String? // this is the body of the issue
   GithubActionPRTitle     String? // this is the title of the PR

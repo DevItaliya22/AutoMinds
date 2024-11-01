@@ -38,6 +38,8 @@ function WorkFlowSegment() {
   const [isFetching, setIsFetching] = useState(false);
   const [isPublishModalOpen, setIsPublishModalOpen] = useState(false);
 
+
+
   useEffect(() => {
     async function fetchData() {
       setIsFetching(true);
@@ -52,6 +54,7 @@ function WorkFlowSegment() {
         return;
       }
       setNodes(res);
+        console.log(res)
       setIsFetching(false);
     }
     fetchData();
@@ -66,23 +69,23 @@ function WorkFlowSegment() {
       case 'Google':
         if (node.googleNode?.ServiceName === 'GoogleDrive') {
           return node.workerType === 'Trigger' ? (
-            <GoogleDriveTrigger steps={currentStep + 1} />
+            <GoogleDriveTrigger steps={currentStep + 1}  nodeId={nodes[currentStep-1].id}/>
           ) : (
-            <GoogleDriveAction steps={currentStep + 1} />
+            <GoogleDriveAction steps={currentStep + 1} nodeId={nodes[currentStep-1].id}/>
           );
         } else if (node.googleNode?.ServiceName === 'GoogleMail') {
           return node.workerType === 'Trigger' ? (
-            <GmailTrigger steps={currentStep + 1} />
+            <GmailTrigger steps={currentStep + 1}  nodeId={nodes[currentStep-1].id}/>
           ) : (
-            <GmailActions steps={currentStep + 1} />
+            <GmailActions steps={currentStep + 1}  nodeId={nodes[currentStep-1].id}/>
           );
         }
         return null;
       case 'Github':
         return node.workerType === 'Trigger' ? (
-          <GitHubTrigger steps={currentStep + 1} />
+          <GitHubTrigger steps={currentStep + 1}  nodeId={nodes[currentStep-1].id}/>
         ) : (
-          <GitHubAction steps={currentStep + 1} />
+          <GitHubAction steps={currentStep + 1}  nodeId={nodes[currentStep-1].id}/>
         );
       default:
         return null;

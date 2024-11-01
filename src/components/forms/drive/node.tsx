@@ -1,5 +1,6 @@
 'use client';
 import { useState } from 'react';
+import axios from 'axios';
 import { useParams, useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import {
@@ -56,9 +57,11 @@ const actionOptions: ActionOption[] = [
 
 type Props = {
   steps: number;
+  nodeId : string;
 };
 
-export default function GoogleDriveAction({ steps }: Props) {
+export default function GoogleDriveAction({ steps , nodeId}: Props) {
+  
   const { workFlowSegment } = useParams<{ workFlowSegment: string }>();
   const router = useRouter();
   const path = `/workflows/${workFlowSegment}?step=${steps}`;
@@ -73,11 +76,29 @@ export default function GoogleDriveAction({ steps }: Props) {
   const [query, setQuery] = useState<string>('');
   const [isPublic, setIsPublic] = useState<boolean>(false);
 
+  const handleSave = async() => {
+    const data = {
+      action,
+      fileId,
+      fileName,
+      folderName,
+      fileContent,
+      sourceFolderId,
+      destinationFolderId,
+      query,
+      isPublic,
+      isTrigger : false
+    };
+    const res = await axios.post(`/api/google/drive/${workFlowSegment}/${nodeId}`, data);
+    if (res.data.success) {
+      router.push(path);
+    }
+  }
+
   return (
     <div className="bg-background p-6 md:p-12">
       <div className="max-w-4xl mx-auto space-y-8">
-        <h1 className="text-3xl font-bold text-primary">Google Drive Action</h1>
-
+        <h1 className="text-3xl font-bold text-primary">Google Drive  {nodeId}  {workFlowSegment}</h1>
         <div className="space-y-6">
           <div>
             <Label htmlFor="action" className="text-lg font-semibold">
@@ -222,7 +243,7 @@ export default function GoogleDriveAction({ steps }: Props) {
           <Button
             variant="default"
             className="w-full md:w-auto px-8 py-2 text-lg"
-            onClick={() => router.push(path)}
+            onClick={handleSave}
           >
             Save and Continue
           </Button>

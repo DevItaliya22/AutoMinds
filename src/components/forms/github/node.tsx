@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import {
@@ -15,6 +15,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
 import type { GitHubAction } from '@/lib/types';
+import axios from 'axios';
 
 interface ActionOption {
   value: GitHubAction;
@@ -51,10 +52,11 @@ const actionOptions: ActionOption[] = [
 ];
 
 type Props = {
+  nodeId : string;
   steps: number;
 };
 
-export default function GitHubAction({ steps }: Props) {
+export default function GitHubAction({ steps,nodeId }: Props) {
   const { workFlowSegment } = useParams<{ workFlowSegment: string }>();
   const router = useRouter();
   const path = `/workflows/${workFlowSegment}?step=${steps}`;
@@ -68,7 +70,35 @@ export default function GitHubAction({ steps }: Props) {
   const [description, setDescription] = useState<string>('');
   const [isPublic, setIsPublic] = useState<boolean>(false);
 
-  const mockRepositories = ['user/repo1', 'user/repo2', 'organization/repo3'];
+  const [userRepos, setUserRepos] = useState([]);
+
+
+  useEffect(()=>{
+    const fetchRepos = async () => {
+      const res = await axios.get('/api/github/getRepos');
+      setUserRepos(res.data.data);
+    }
+    fetchRepos();
+  })
+
+  const handleClick = async () => {
+    const data = {
+      action,
+      repository,
+      title,
+      body,
+      branch,
+      fileName,
+      description,
+      isPublic,
+      isTrigger : false
+    };
+    const res = await axios.post(`/api/github/${workFlowSegment}/${nodeId}`, data);
+    if(res.data.success){
+      router.push(path)
+    }
+  };
+  
 
   return (
     <div className="bg-background p-6 md:p-12">
@@ -107,7 +137,7 @@ export default function GitHubAction({ steps }: Props) {
                   <SelectValue placeholder="Choose a repository" />
                 </SelectTrigger>
                 <SelectContent>
-                  {mockRepositories.map((repo) => (
+                  {userRepos && userRepos.map((repo) => (
                     <SelectItem key={repo} value={repo}>
                       {repo}
                     </SelectItem>
@@ -163,7 +193,6 @@ export default function GitHubAction({ steps }: Props) {
               />
             </div>
           )}
-
           {action === 'createGist' && (
             <>
               <div>
@@ -211,7 +240,7 @@ export default function GitHubAction({ steps }: Props) {
           <Button
             variant="default"
             className="w-full md:w-auto px-8 py-2 text-lg"
-            onClick={() => router.push(path)}
+            onClick={handleClick}
           >
             Save and Continue
           </Button>
