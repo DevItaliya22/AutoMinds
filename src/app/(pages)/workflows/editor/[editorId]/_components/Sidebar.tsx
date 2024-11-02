@@ -10,7 +10,7 @@ import { useWorkflowStore } from '@/store/Editing';
 import { useIsWorkflowSavedStore, WorkflowState } from '@/store/Saving';
 
 type SidebarProps = {
-  handleExit: (exitPath:string) => void;
+  handleExit: (exitPath: string) => void;
   handleSave: () => void;
   hasTrigger: boolean;
   searchTerm: string;

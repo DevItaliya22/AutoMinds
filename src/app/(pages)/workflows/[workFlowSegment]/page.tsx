@@ -38,8 +38,6 @@ function WorkFlowSegment() {
   const [isFetching, setIsFetching] = useState(false);
   const [isPublishModalOpen, setIsPublishModalOpen] = useState(false);
 
-
-
   useEffect(() => {
     async function fetchData() {
       setIsFetching(true);
@@ -54,7 +52,7 @@ function WorkFlowSegment() {
         return;
       }
       setNodes(res);
-        console.log(res)
+      console.log(res);
       setIsFetching(false);
     }
     fetchData();
@@ -69,23 +67,41 @@ function WorkFlowSegment() {
       case 'Google':
         if (node.googleNode?.ServiceName === 'GoogleDrive') {
           return node.workerType === 'Trigger' ? (
-            <GoogleDriveTrigger steps={currentStep + 1}  nodeId={nodes[currentStep-1].id}/>
+            <GoogleDriveTrigger
+              steps={currentStep + 1}
+              nodeId={nodes[currentStep - 1].id}
+            />
           ) : (
-            <GoogleDriveAction steps={currentStep + 1} nodeId={nodes[currentStep-1].id}/>
+            <GoogleDriveAction
+              steps={currentStep + 1}
+              nodeId={nodes[currentStep - 1].id}
+            />
           );
         } else if (node.googleNode?.ServiceName === 'GoogleMail') {
           return node.workerType === 'Trigger' ? (
-            <GmailTrigger steps={currentStep + 1}  nodeId={nodes[currentStep-1].id}/>
+            <GmailTrigger
+              steps={currentStep + 1}
+              nodeId={nodes[currentStep - 1].id}
+            />
           ) : (
-            <GmailActions steps={currentStep + 1}  nodeId={nodes[currentStep-1].id}/>
+            <GmailActions
+              steps={currentStep + 1}
+              nodeId={nodes[currentStep - 1].id}
+            />
           );
         }
         return null;
       case 'Github':
         return node.workerType === 'Trigger' ? (
-          <GitHubTrigger steps={currentStep + 1}  nodeId={nodes[currentStep-1].id}/>
+          <GitHubTrigger
+            steps={currentStep + 1}
+            nodeId={nodes[currentStep - 1].id}
+          />
         ) : (
-          <GitHubAction steps={currentStep + 1}  nodeId={nodes[currentStep-1].id}/>
+          <GitHubAction
+            steps={currentStep + 1}
+            nodeId={nodes[currentStep - 1].id}
+          />
         );
       default:
         return null;
@@ -109,10 +125,10 @@ function WorkFlowSegment() {
         <motion.div whileTap={{ scale: 0.95 }}>
           <Button
             variant="outline"
-            onClick={() => router.push("/workflows")}
+            onClick={() => router.push('/workflows')}
             className="px-6 py-3 text-lg font-semibold"
           >
-            Workflow page 
+            Workflow page
           </Button>
         </motion.div>
         <motion.div whileTap={{ scale: 0.95 }}>

@@ -7,10 +7,10 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 
 export default function Signin() {
-  const {status}  = useSession();
+  const { status } = useSession();
   const router = useRouter();
-  
-  if(status === 'authenticated') {
+
+  if (status === 'authenticated') {
     router.push('/dashboard');
   }
 

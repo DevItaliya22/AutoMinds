@@ -8,7 +8,16 @@ import {
   CardContent,
 } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Database, Github, Mail, PlusCircle, MoreHorizontal, X, Edit, Check } from 'lucide-react';
+import {
+  Database,
+  Github,
+  Mail,
+  PlusCircle,
+  MoreHorizontal,
+  X,
+  Edit,
+  Check,
+} from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -22,7 +31,6 @@ import clsx from 'clsx';
 import { useWorkflowStore } from '@/store/Editing';
 import { useIsWorkflowSavedStore, WorkflowState } from '@/store/Saving';
 
-
 type CustomNodeData = {
   label: string;
   type: string;
@@ -31,7 +39,7 @@ type CustomNodeData = {
 };
 
 export default function CustomWorkflowNode({ data }: { data: CustomNodeData }) {
-  const { isEditing, setIsEditing } = useWorkflowStore((state:any) => ({
+  const { isEditing, setIsEditing } = useWorkflowStore((state: any) => ({
     isEditing: state.isEditing,
     setIsEditing: state.setIsEditing,
   }));
@@ -50,12 +58,13 @@ export default function CustomWorkflowNode({ data }: { data: CustomNodeData }) {
     return editedLabel.trim() !== '' && editedDescription.trim() !== '';
   };
 
-  useEffect(()=>{
-    if(isEditing)setIsSaved(false)
-  },[isEditing,setIsSaved]);
+  useEffect(() => {
+    if (isEditing) setIsSaved(false);
+  }, [isEditing, setIsSaved]);
 
   const logo = useMemo(() => {
-    if (data.nodeType === 'Google Drive') return <Database className="h-6 w-6" />;
+    if (data.nodeType === 'Google Drive')
+      return <Database className="h-6 w-6" />;
     if (data.nodeType === 'Gmail') return <Mail className="h-6 w-6" />;
     if (data.nodeType === 'Github') return <Github className="h-6 w-6" />;
     return <PlusCircle className="h-6 w-6" />;
@@ -75,7 +84,9 @@ export default function CustomWorkflowNode({ data }: { data: CustomNodeData }) {
       return;
     }
     setNodes((nodes) => nodes.filter((node) => node.id !== nodeId));
-    setEdges((edges) => edges.filter((edge) => edge.source !== nodeId && edge.target !== nodeId));
+    setEdges((edges) =>
+      edges.filter((edge) => edge.source !== nodeId && edge.target !== nodeId),
+    );
     setIsSaved(false);
   };
 
@@ -92,9 +103,16 @@ export default function CustomWorkflowNode({ data }: { data: CustomNodeData }) {
     setNodes((nodes) =>
       nodes.map((node) =>
         node.id === nodeId
-          ? { ...node, data: { ...node.data, label: editedLabel.trim(), description: editedDescription.trim() } }
-          : node
-      )
+          ? {
+              ...node,
+              data: {
+                ...node.data,
+                label: editedLabel.trim(),
+                description: editedDescription.trim(),
+              },
+            }
+          : node,
+      ),
     );
     setIsEditing(false);
   };
@@ -136,10 +154,14 @@ export default function CustomWorkflowNode({ data }: { data: CustomNodeData }) {
                     className="mt-2"
                   />
                   {editedLabel.trim() === '' && (
-                    <p className="text-xs text-red-500 mt-1">Name is required</p>
+                    <p className="text-xs text-red-500 mt-1">
+                      Name is required
+                    </p>
                   )}
                   {editedDescription.trim() === '' && (
-                    <p className="text-xs text-red-500 mt-1">Description is required</p>
+                    <p className="text-xs text-red-500 mt-1">
+                      Description is required
+                    </p>
                   )}
                 </>
               ) : (
@@ -149,14 +171,22 @@ export default function CustomWorkflowNode({ data }: { data: CustomNodeData }) {
           </div>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className={`h-8 w-8 p-0 ${isEditing ? "bg-primary" : ""}`}>
-                <MoreHorizontal className={`h-4 w-4 ${isEditing ? "text-primary-foreground" : ""}`} />
+              <Button
+                variant="ghost"
+                className={`h-8 w-8 p-0 ${isEditing ? 'bg-primary' : ''}`}
+              >
+                <MoreHorizontal
+                  className={`h-4 w-4 ${isEditing ? 'text-primary-foreground' : ''}`}
+                />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               {isEditing ? (
                 <>
-                  <DropdownMenuItem onClick={handleConfirmEdit} disabled={!isValidEdit()}>
+                  <DropdownMenuItem
+                    onClick={handleConfirmEdit}
+                    disabled={!isValidEdit()}
+                  >
                     <Check className="mr-2 h-4 w-4" />
                     Confirm
                   </DropdownMenuItem>

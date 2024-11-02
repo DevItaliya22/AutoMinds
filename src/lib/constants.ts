@@ -48,13 +48,23 @@ type TriggerOrActionNodeReactType = {
 }[];
 
 export const TriggerNodes: TriggerOrActionNodeReactType = [
-  { type: 'Google', subType: 'Google Drive', label: 'Google Drive Trigger', icon: Database },
+  {
+    type: 'Google',
+    subType: 'Google Drive',
+    label: 'Google Drive Trigger',
+    icon: Database,
+  },
   { type: 'Github', subType: 'Github', label: 'GitHub Trigger', icon: Github },
   { type: 'Google', subType: 'Gmail', label: 'Gmail Trigger', icon: Mailbox },
 ];
 
 export const ActionNodes: TriggerOrActionNodeReactType = [
-  { type: 'Google', subType: 'Google Drive', label: 'Google Drive Action', icon: Database },
+  {
+    type: 'Google',
+    subType: 'Google Drive',
+    label: 'Google Drive Action',
+    icon: Database,
+  },
   { type: 'Github', subType: 'Github', label: 'GitHub Action', icon: Github },
   { type: 'Google', subType: 'Gmail', label: 'Gmail Action', icon: Mailbox },
 ];

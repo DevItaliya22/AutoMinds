@@ -25,10 +25,10 @@ export async function getNodes({ workflowId }: { workflowId: string }) {
     },
     include: {
       nodes: {
-        include : {
-          googleNode : true,
-          githubNode : true
-        }
+        include: {
+          googleNode: true,
+          githubNode: true,
+        },
       },
     },
   });

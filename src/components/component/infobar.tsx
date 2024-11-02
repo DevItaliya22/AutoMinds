@@ -11,7 +11,14 @@ import {
 } from '@/components/ui/tooltip';
 import Image from 'next/image';
 import getImageURL from '@/app/actions/getImage';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from '@/components/ui/dialog';
 import { Button } from '../ui/button';
 import { useIsWorkflowSavedStore } from '@/store/Saving';
 
@@ -27,7 +34,6 @@ const Header = () => {
   const [isExitModalOpen, setIsExitModalOpen] = useState(false);
   const [exitDestination, setExitDestination] = useState('');
   const { isSaved, setIsSaved } = useIsWorkflowSavedStore();
-
 
   if (pathname.includes('editor')) formattedPath = 'Editor';
 

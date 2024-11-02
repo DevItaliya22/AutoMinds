@@ -26,7 +26,14 @@ import { getNodesAndEdges } from '@/app/actions/getNodeAndEdges';
 import { saveWorkflow } from '@/app/actions/saveWorkflow';
 import CustomWorkflowNode from './_components/CustoWorkflowNodes';
 import Sidebar from './_components/Sidebar';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { useIsWorkflowSavedStore } from '@/store/Saving';
 
@@ -48,7 +55,6 @@ export default function EditorContent() {
   const [exitDestination, setExitDestination] = useState('');
   const workFlowPath = `/workflows/${editorId}`;
   const { isSaved, setIsSaved } = useIsWorkflowSavedStore();
-
 
   // useEffect(()=>{
   //   setIsSaved(false);
@@ -118,7 +124,7 @@ export default function EditorContent() {
       setEdges((eds) => addEdge(params, eds));
       setIsSaved(false);
     },
-    [setEdges,setIsSaved],
+    [setEdges, setIsSaved],
   );
 
   const onDragOver = useCallback((event: DragEvent<HTMLDivElement>) => {
@@ -129,19 +135,19 @@ export default function EditorContent() {
   const onDrop = useCallback(
     (event: DragEvent<HTMLDivElement>) => {
       event.preventDefault();
-  
+
       const type = event.dataTransfer.getData('application/reactflow');
       const nodeSubType = event.dataTransfer.getData('application/nodetype');
-  
+
       if (typeof type === 'undefined' || !type) {
         return;
       }
-  
+
       const position = reactFlowInstance.project({
         x: event.clientX - 250,
         y: event.clientY,
       });
-  
+
       if (nodes.length === 0 && type !== 'Google' && type !== 'Github') {
         toast({
           title: 'Error',
@@ -150,7 +156,7 @@ export default function EditorContent() {
         });
         return;
       }
-  
+
       const newNode = {
         id: `${nodeSubType}-${Date.now()}`,
         type: 'customNode',
@@ -162,11 +168,11 @@ export default function EditorContent() {
           nodeType: nodeSubType,
         },
       };
-  
+
       setNodes((nds) => nds.concat(newNode));
       setIsSaved(false);
     },
-    [reactFlowInstance, setNodes, nodes, toast,setIsSaved],
+    [reactFlowInstance, setNodes, nodes, toast, setIsSaved],
   );
 
   const handleSave = async () => {

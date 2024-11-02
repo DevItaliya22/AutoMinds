@@ -84,7 +84,7 @@ const actionOptions: ActionOption[] = [
 ];
 
 type Props = {
-  nodeId : string;
+  nodeId: string;
   steps: number;
 };
 
@@ -114,21 +114,28 @@ export default function GmailActions({ steps }: Props) {
             <Label htmlFor="action" className="text-lg font-semibold">
               Select an action:
             </Label>
-            <Select onValueChange={(value) => setAction(value as GmailActionType)} value={action}>
+            <Select
+              onValueChange={(value) => setAction(value as GmailActionType)}
+              value={action}
+            >
               <SelectTrigger id="action" className="w-full mt-2">
                 <SelectValue placeholder="Choose an action" />
               </SelectTrigger>
               <SelectContent>
                 {actionOptions.map((option) => (
                   <SelectItem key={option.value} value={option.value}>
-                      <div>{option.label} ( {option.description} )</div>
+                    <div>
+                      {option.label} ( {option.description} )
+                    </div>
                   </SelectItem>
                 ))}
               </SelectContent>
             </Select>
           </div>
 
-          {(action === 'addLabel' || action === 'removeLabel' || action === 'createLabel') && (
+          {(action === 'addLabel' ||
+            action === 'removeLabel' ||
+            action === 'createLabel') && (
             <div>
               <Label htmlFor="label" className="text-lg font-semibold">
                 Label:
@@ -143,7 +150,11 @@ export default function GmailActions({ steps }: Props) {
             </div>
           )}
 
-          {(action === 'addLabel' || action === 'removeLabel' || action === 'deleteEmail' || action === 'replyToEmail' || action === 'createDraftReply') && (
+          {(action === 'addLabel' ||
+            action === 'removeLabel' ||
+            action === 'deleteEmail' ||
+            action === 'replyToEmail' ||
+            action === 'createDraftReply') && (
             <div>
               <Label htmlFor="emailId" className="text-lg font-semibold">
                 Email ID:
@@ -187,7 +198,10 @@ export default function GmailActions({ steps }: Props) {
             </>
           )}
 
-          {(action === 'createDraft' || action === 'sendEmail' || action === 'replyToEmail' || action === 'createDraftReply') && (
+          {(action === 'createDraft' ||
+            action === 'sendEmail' ||
+            action === 'replyToEmail' ||
+            action === 'createDraftReply') && (
             <div>
               <Label htmlFor="body" className="text-lg font-semibold">
                 Body:

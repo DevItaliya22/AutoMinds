@@ -11,7 +11,14 @@ import {
 } from '@/components/ui/select';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Paperclip, Mail, Search, Tag, Star, MessageSquare } from 'lucide-react';
+import {
+  Paperclip,
+  Mail,
+  Search,
+  Tag,
+  Star,
+  MessageSquare,
+} from 'lucide-react';
 import type { GmailTriggerActions } from '@/lib/types';
 
 interface ActionOption {
@@ -37,7 +44,8 @@ const actionOptions: ActionOption[] = [
   {
     value: 'newEmailMatchingSearch',
     label: 'New Email Matching Search',
-    description: 'Triggers when you receive a new email that matches a search string you provide.',
+    description:
+      'Triggers when you receive a new email that matches a search string you provide.',
     icon: <Search className="mr-2 h-4 w-4" />,
   },
   {
@@ -55,7 +63,8 @@ const actionOptions: ActionOption[] = [
   {
     value: 'newStarredEmail',
     label: 'New Starred Email',
-    description: 'Triggers when you receive a new email and star it within two days.',
+    description:
+      'Triggers when you receive a new email and star it within two days.',
     icon: <Star className="mr-2 h-4 w-4" />,
   },
   {
@@ -67,7 +76,7 @@ const actionOptions: ActionOption[] = [
 ];
 
 type Props = {
-  nodeId : string;
+  nodeId: string;
   steps: number;
 };
 
@@ -95,14 +104,19 @@ export default function GmailTrigger({ steps }: Props) {
             <Label htmlFor="action" className="text-lg font-semibold">
               Select an action:
             </Label>
-            <Select onValueChange={(value) => setAction(value as GmailTriggerActions)} value={action}>
+            <Select
+              onValueChange={(value) => setAction(value as GmailTriggerActions)}
+              value={action}
+            >
               <SelectTrigger id="action" className="w-full mt-2">
                 <SelectValue placeholder="Choose an action" />
               </SelectTrigger>
               <SelectContent>
                 {actionOptions.map((option) => (
                   <SelectItem key={option.value} value={option.value}>
-                     <div>{option.label} ( {option.description} )</div>
+                    <div>
+                      {option.label} ( {option.description} )
+                    </div>
                   </SelectItem>
                 ))}
               </SelectContent>

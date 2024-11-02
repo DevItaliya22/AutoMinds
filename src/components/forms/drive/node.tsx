@@ -57,11 +57,10 @@ const actionOptions: ActionOption[] = [
 
 type Props = {
   steps: number;
-  nodeId : string;
+  nodeId: string;
 };
 
-export default function GoogleDriveAction({ steps , nodeId}: Props) {
-  
+export default function GoogleDriveAction({ steps, nodeId }: Props) {
   const { workFlowSegment } = useParams<{ workFlowSegment: string }>();
   const router = useRouter();
   const path = `/workflows/${workFlowSegment}?step=${steps}`;
@@ -76,7 +75,7 @@ export default function GoogleDriveAction({ steps , nodeId}: Props) {
   const [query, setQuery] = useState<string>('');
   const [isPublic, setIsPublic] = useState<boolean>(false);
 
-  const handleSave = async() => {
+  const handleSave = async () => {
     const data = {
       action,
       fileId,
@@ -87,18 +86,23 @@ export default function GoogleDriveAction({ steps , nodeId}: Props) {
       destinationFolderId,
       query,
       isPublic,
-      isTrigger : false
+      isTrigger: false,
     };
-    const res = await axios.post(`/api/google/drive/${workFlowSegment}/${nodeId}`, data);
+    const res = await axios.post(
+      `/api/google/drive/${workFlowSegment}/${nodeId}`,
+      data,
+    );
     if (res.data.success) {
       router.push(path);
     }
-  }
+  };
 
   return (
     <div className="bg-background p-6 md:p-12">
       <div className="max-w-4xl mx-auto space-y-8">
-        <h1 className="text-3xl font-bold text-primary">Google Drive  {nodeId}  {workFlowSegment}</h1>
+        <h1 className="text-3xl font-bold text-primary">
+          Google Drive {nodeId} {workFlowSegment}
+        </h1>
         <div className="space-y-6">
           <div>
             <Label htmlFor="action" className="text-lg font-semibold">
@@ -114,7 +118,9 @@ export default function GoogleDriveAction({ steps , nodeId}: Props) {
               <SelectContent>
                 {actionOptions.map((option) => (
                   <SelectItem key={option.value} value={option.value}>
-                      <div>{option.label} ( {option.description} )</div>
+                    <div>
+                      {option.label} ( {option.description} )
+                    </div>
                   </SelectItem>
                 ))}
               </SelectContent>

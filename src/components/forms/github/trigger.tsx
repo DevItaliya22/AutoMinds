@@ -64,34 +64,34 @@ const triggerOptions: TriggerOption[] = [
 ];
 
 type Props = {
-  nodeId : string;
+  nodeId: string;
   steps: number;
 };
 
-export default function GitHubTrigger({ steps,nodeId }: Props) {
+export default function GitHubTrigger({ steps, nodeId }: Props) {
   const { workFlowSegment } = useParams<{ workFlowSegment: string }>();
   const router = useRouter();
   const path = `/workflows/${workFlowSegment}?step=${steps}`;
 
   const [trigger, setTrigger] = useState<GitHubTrigger | ''>('');
   const [repository, setRepository] = useState<string>('');
-  const [userRepos,setUserRepos] = useState([]);
+  const [userRepos, setUserRepos] = useState([]);
 
   const mockRepositories = ['user/repo1', 'user/repo2', 'organization/repo3'];
 
-  const handleClick = async() => {
+  const handleClick = async () => {
     const data = {
-      isTrigger : true ,
+      isTrigger: true,
       repository,
-      action : trigger
-    }
+      action: trigger,
+    };
 
-    const res = await axios.post(`/api/github/${workFlowSegment}/${nodeId}`)
+    const res = await axios.post(`/api/github/${workFlowSegment}/${nodeId}`);
 
-    if(res.data.success){
-      router.push(path)
+    if (res.data.success) {
+      router.push(path);
     }
-  }
+  };
 
   return (
     <div className="bg-background p-6 md:p-12">
@@ -113,7 +113,9 @@ export default function GitHubTrigger({ steps,nodeId }: Props) {
               <SelectContent>
                 {triggerOptions.map((option) => (
                   <SelectItem key={option.value} value={option.value}>
-                     <div>{option.label} ( {option.description} )</div>
+                    <div>
+                      {option.label} ( {option.description} )
+                    </div>
                   </SelectItem>
                 ))}
               </SelectContent>

@@ -52,11 +52,11 @@ const actionOptions: ActionOption[] = [
 ];
 
 type Props = {
-  nodeId : string;
+  nodeId: string;
   steps: number;
 };
 
-export default function GitHubAction({ steps,nodeId }: Props) {
+export default function GitHubAction({ steps, nodeId }: Props) {
   const { workFlowSegment } = useParams<{ workFlowSegment: string }>();
   const router = useRouter();
   const path = `/workflows/${workFlowSegment}?step=${steps}`;
@@ -72,14 +72,13 @@ export default function GitHubAction({ steps,nodeId }: Props) {
 
   const [userRepos, setUserRepos] = useState([]);
 
-
-  useEffect(()=>{
+  useEffect(() => {
     const fetchRepos = async () => {
       const res = await axios.get('/api/github/getRepos');
       setUserRepos(res.data.data);
-    }
+    };
     fetchRepos();
-  })
+  });
 
   const handleClick = async () => {
     const data = {
@@ -91,14 +90,16 @@ export default function GitHubAction({ steps,nodeId }: Props) {
       fileName,
       description,
       isPublic,
-      isTrigger : false
+      isTrigger: false,
     };
-    const res = await axios.post(`/api/github/${workFlowSegment}/${nodeId}`, data);
-    if(res.data.success){
-      router.push(path)
+    const res = await axios.post(
+      `/api/github/${workFlowSegment}/${nodeId}`,
+      data,
+    );
+    if (res.data.success) {
+      router.push(path);
     }
   };
-  
 
   return (
     <div className="bg-background p-6 md:p-12">
@@ -120,14 +121,18 @@ export default function GitHubAction({ steps,nodeId }: Props) {
               <SelectContent>
                 {actionOptions.map((option) => (
                   <SelectItem key={option.value} value={option.value}>
-                      <div>{option.label} ( {option.description} )</div>
+                    <div>
+                      {option.label} ( {option.description} )
+                    </div>
                   </SelectItem>
                 ))}
               </SelectContent>
             </Select>
           </div>
 
-          {(action === 'createIssue' || action === 'createPullRequest' || action === "createBranch") && (
+          {(action === 'createIssue' ||
+            action === 'createPullRequest' ||
+            action === 'createBranch') && (
             <div>
               <Label htmlFor="repository" className="text-lg font-semibold">
                 Select a repository:
@@ -137,11 +142,12 @@ export default function GitHubAction({ steps,nodeId }: Props) {
                   <SelectValue placeholder="Choose a repository" />
                 </SelectTrigger>
                 <SelectContent>
-                  {userRepos && userRepos.map((repo) => (
-                    <SelectItem key={repo} value={repo}>
-                      {repo}
-                    </SelectItem>
-                  ))}
+                  {userRepos &&
+                    userRepos.map((repo) => (
+                      <SelectItem key={repo} value={repo}>
+                        {repo}
+                      </SelectItem>
+                    ))}
                 </SelectContent>
               </Select>
             </div>
@@ -179,7 +185,9 @@ export default function GitHubAction({ steps,nodeId }: Props) {
             </div>
           )}
 
-          {(action === 'createPullRequest' || action === 'deleteBranch' || action === "createBranch") && (
+          {(action === 'createPullRequest' ||
+            action === 'deleteBranch' ||
+            action === 'createBranch') && (
             <div>
               <Label htmlFor="branch" className="text-lg font-semibold">
                 Branch name:

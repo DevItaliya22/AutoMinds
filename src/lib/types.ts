@@ -45,7 +45,7 @@ export type GitHubTrigger =
   | 'newRepoEvent'
   | 'newRepository';
 
-  export type GmailTriggerActions =
+export type GmailTriggerActions =
   | 'newAttachment'
   | 'newEmail'
   | 'newEmailMatchingSearch'

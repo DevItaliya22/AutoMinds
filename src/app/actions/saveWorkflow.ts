@@ -43,51 +43,54 @@ export async function saveWorkflow(data: {
 
   if (!workflow) return 'Workflow not found';
 
-  const deleteNodes : any = [];
-  const deleteEdges : any = [];
+  const deleteNodes: any = [];
+  const deleteEdges: any = [];
 
   for (const node of workflow.nodes) {
     if (!data.nodes.find((n) => n.id === node.id)) {
-      deleteNodes.push({id : node.id, type : node.type});
+      deleteNodes.push({ id: node.id, type: node.type });
     }
   }
 
-  for(const node of deleteNodes){
-    if(node.type === "Google"){
+  for (const node of deleteNodes) {
+    if (node.type === 'Google') {
       const deletedGoogleNode = await prisma.googleNode.delete({
-        where : {
-          nodeId : node.id
-        }
-      })
+        where: {
+          nodeId: node.id,
+        },
+      });
     } else {
       const deletedGithubNode = await prisma.githubNode.delete({
-        where : {
-          nodeId : node.id
-        }
-      })
+        where: {
+          nodeId: node.id,
+        },
+      });
     }
 
-    const deleted =  await prisma.node.delete({
-      where : {
-        id : node.id,
-        workerType : WorkerType.Action
-      }
-    })
+    const deleted = await prisma.node.delete({
+      where: {
+        id: node.id,
+        workerType: WorkerType.Action,
+      },
+    });
     console.log(deleted);
   }
 
   for (const edge of workflow.edges) {
-    if (deleteNodes.some((node:any) => node.id === edge.sourceId) || deleteNodes.some((node:any) => node.id === edge.targetId)) {
+    if (
+      deleteNodes.some((node: any) => node.id === edge.sourceId) ||
+      deleteNodes.some((node: any) => node.id === edge.targetId)
+    ) {
       deleteEdges.push(edge.id);
     }
   }
-  
-  for(const id of deleteEdges){
+
+  for (const id of deleteEdges) {
     await prisma.edge.delete({
-      where : {
-        id
-      }
-    })
+      where: {
+        id,
+      },
+    });
   }
 
   for (const dataNode of data.nodes) {
@@ -99,9 +102,10 @@ export async function saveWorkflow(data: {
         id: dataNode.id.includes('-') ? dataNode.id.split('-')[1] : dataNode.id,
         name: dataNode.name,
         description: dataNode.description,
-        type: dataNode.id.includes('Google') || dataNode.id.includes('Gmail')
-          ? NodeType.Google
-          : NodeType.Github,
+        type:
+          dataNode.id.includes('Google') || dataNode.id.includes('Gmail')
+            ? NodeType.Google
+            : NodeType.Github,
         workflowId: data.workflowId,
         positionX: dataNode.positionX,
         positionY: dataNode.positionY,
@@ -109,17 +113,30 @@ export async function saveWorkflow(data: {
           dataNode.workerType.toLowerCase() === 'trigger'
             ? WorkerType.Trigger
             : WorkerType.Action,
-        googleNode : dataNode.id.includes('Google') || dataNode.id.includes('Gmail') ? {
-          create : {
-            ServiceName : dataNode.name.includes('Drive') ? ServiceName.GoogleDrive : ServiceName.GoogleMail,
-            isTrigger : dataNode.workerType.toLowerCase() === 'trigger' ? true : false,
-          }
-        } : undefined ,
-        githubNode : dataNode.id.includes('Github') ? {
-          create : {
-              isTrigger : dataNode.workerType.toLowerCase() === 'trigger' ? true : false,
-          }
-        } : undefined
+        googleNode:
+          dataNode.id.includes('Google') || dataNode.id.includes('Gmail')
+            ? {
+                create: {
+                  ServiceName: dataNode.name.includes('Drive')
+                    ? ServiceName.GoogleDrive
+                    : ServiceName.GoogleMail,
+                  isTrigger:
+                    dataNode.workerType.toLowerCase() === 'trigger'
+                      ? true
+                      : false,
+                },
+              }
+            : undefined,
+        githubNode: dataNode.id.includes('Github')
+          ? {
+              create: {
+                isTrigger:
+                  dataNode.workerType.toLowerCase() === 'trigger'
+                    ? true
+                    : false,
+              },
+            }
+          : undefined,
       },
       update: {
         positionX: dataNode.positionX,

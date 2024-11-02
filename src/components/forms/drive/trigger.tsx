@@ -57,10 +57,10 @@ const mockFileTypes = [
 
 type Props = {
   steps: number;
-  nodeId : string;
+  nodeId: string;
 };
 
-export default function GoogleDriveTrigger({ steps,nodeId }: Props) {
+export default function GoogleDriveTrigger({ steps, nodeId }: Props) {
   const { workFlowSegment } = useParams<{ workFlowSegment: string }>();
   const router = useRouter();
   const path = `/workflows/${workFlowSegment}?step=${steps}`;
@@ -83,16 +83,19 @@ export default function GoogleDriveTrigger({ steps,nodeId }: Props) {
     setSelectedFolder('');
   };
 
-  const handleClick = async() => {
+  const handleClick = async () => {
     const data = {
-      action : action ,
-      selectedFolder : selectedFolder,
-      folderPath :folderPath,
-      customPattern : customPattern,
-      selectedFileType : selectedFileType,
-      isTrigger : true
-    }
-    const res = await axios.post(`/api/google/drive/${workFlowSegment}/${nodeId}`, data);
+      action: action,
+      selectedFolder: selectedFolder,
+      folderPath: folderPath,
+      customPattern: customPattern,
+      selectedFileType: selectedFileType,
+      isTrigger: true,
+    };
+    const res = await axios.post(
+      `/api/google/drive/${workFlowSegment}/${nodeId}`,
+      data,
+    );
     if (res.data.success) {
       router.push(path);
     }
@@ -102,7 +105,7 @@ export default function GoogleDriveTrigger({ steps,nodeId }: Props) {
     <div className="bg-background p-6 md:p-12">
       <div className="max-w-4xl mx-auto space-y-8">
         <h1 className="text-3xl font-bold text-primary">
-          Google Drive Trigger {nodeId ? nodeId : "not yet"}
+          Google Drive Trigger {nodeId ? nodeId : 'not yet'}
         </h1>
 
         <div className="space-y-6">
@@ -122,7 +125,9 @@ export default function GoogleDriveTrigger({ steps,nodeId }: Props) {
               <SelectContent>
                 {actionOptions.map((option) => (
                   <SelectItem key={option.value} value={option.value}>
-                    <div>{option.label} ( {option.description} )</div>
+                    <div>
+                      {option.label} ( {option.description} )
+                    </div>
                   </SelectItem>
                 ))}
               </SelectContent>

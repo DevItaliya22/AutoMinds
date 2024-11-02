@@ -9,17 +9,17 @@
 1) if watch a file , then we will select a file from list of files in ui (select dropper)
 2) If create a file in folder is there , then we will make user select folder and we can go as deep as we can till user have folder
 
+<!-- Todos -->
 
-<!-- Todos -->  
+Hardes thing to implement is CTRL+Z thing as this undo redo cannot be achived without storing the complete state on zustand and so this would be probably the last thing to achieve
 
-Hardes thing to implement is CTRL+Z thing as this undo redo cannot be achived without storing the complete state on zustand and so this would be probably the last thing to achieve 
-
-in /workflows , draft active and inactive thing is still baki , so when we publish , we have to make it active and then make than publish buttton to unpublish and there we will make it inactive  draft isfor editing thing only , then we will play with active  and inactive 
+in /workflows , draft active and inactive thing is still baki , so when we publish , we have to make it active and then make than publish buttton to unpublish and there we will make it inactive draft isfor editing thing only , then we will play with active and inactive
 
 hhh
+
 <!-- Todo before 31  -->
 <!-- doing rn -->
-All 6 forms need one thing , that is to take data from form and put it in backend , and also we ofc wont fetch data for every node , so we will make a in memory array kinda thing of object , where if user fetch info for a node then he will get that from array first and then from fetch req if not fetched already ,
 
+All 6 forms need one thing , that is to take data from form and put it in backend , and also we ofc wont fetch data for every node , so we will make a in memory array kinda thing of object , where if user fetch info for a node then he will get that from array first and then from fetch req if not fetched already ,
 
 Add redis queue for async taks

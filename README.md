@@ -1,7 +1,8 @@
 # AutoMinds
 
 ## 🌟 Overview
-AutoMinds is a completely open-source platform that allows you to connect multiple user applications (such as Google Drive, Google Docs, Google Sheets, GitHub, Discord* and many more) and automates workflows between them. AutoMinds lets you set up triggers and actions to streamline and automate repetitive tasks across different platforms.
+
+AutoMinds is a completely open-source platform that allows you to connect multiple user applications (such as Google Drive, Google Docs, Google Sheets, GitHub, Discord\* and many more) and automates workflows between them. AutoMinds lets you set up triggers and actions to streamline and automate repetitive tasks across different platforms.
 
 🔗 See deployed website: [AutoMinds](https://auto-minds-six.vercel.app/)
 
@@ -17,10 +18,12 @@ AutoMinds is a completely open-source platform that allows you to connect multip
 - [📜 License](#license)
 
 ## ✨ [Features](/features.md)
-- **Multi-App Connectivity**: Connect your Google Drive, Google Docs, Google Sheets, GitHub, Discord*, and more. 📂
-    ![main_page](images/image.png)
+
+- **Multi-App Connectivity**: Connect your Google Drive, Google Docs, Google Sheets, GitHub, Discord\*, and more. 📂
+  ![main_page](images/image.png)
 
 - **Automated Triggers**: Create triggers to automatically respond to specific events. For example:
+
   - When a Google Doc is created, a corresponding GitHub file can be auto-generated.
   - New CSV files added to GitHub can trigger Google Sheets entries.
 
@@ -31,21 +34,24 @@ AutoMinds is a completely open-source platform that allows you to connect multip
 - **Customizable Actions**: Choose actions that fit your workflow, saving you time and eliminating repetitive tasks. ⏳
 
 # 📘 Steps
+
 - Steps to trigger:
-    1. Connect all apps. 🔗
-    2. Create Workflow. ⚙️
-    ![workflow-image](images/image1.png)
-    3. Drag the trigger from the left side ➡️
-    ![trigger-page](images/image2.png)
-    4. Connect the triggers. 🔄
-    ![connected-trigger](images/image3.png)
+  1. Connect all apps. 🔗
+  2. Create Workflow. ⚙️
+     ![workflow-image](images/image1.png)
+  3. Drag the trigger from the left side ➡️
+     ![trigger-page](images/image2.png)
+  4. Connect the triggers. 🔄
+     ![connected-trigger](images/image3.png)
 
 ## 🔧 Usage
 
 1. **Connecting Apps**
-   - Log into AutoMinds and link your desired apps (e.g., Google Apps, GitHub, Discord*).
+
+   - Log into AutoMinds and link your desired apps (e.g., Google Apps, GitHub, Discord\*).
 
 2. **Creating a Workflow**
+
    - Set up workflows with specific triggers and actions. For example:
      - **Trigger**: Google Docs creation 📄
      - **Action**: Auto-generate a corresponding GitHub file 📂
@@ -57,8 +63,8 @@ AutoMinds is a completely open-source platform that allows you to connect multip
 
 - **Google Apps** (Docs, Sheets, Drive, etc.) 📄
 - **GitHub** (Repository management, file creation, etc.) 💻
-- **Discord*** (Messaging, notifications, etc.) 💬 <br>
-`*` Still Under-Devlopment (Note) 
+- **Discord\*** (Messaging, notifications, etc.) 💬 <br>
+  `*` Still Under-Devlopment (Note)
 
 ## ⚙️ Workflow Setup
 
@@ -76,13 +82,13 @@ AutoMinds is a completely open-source platform that allows you to connect multip
 ## 📋 Todos & Upcoming Features
 
 - **Confirmation Prompts**: Alert users attempting to exit the workflow page without saving changes, including exits from:
-  - The navbar, "Exit Editor" button, and window close. 
-- **Delete Node Feature**: Checks if node count from frontend is less than in the database, indicating node deletion. Implements backend validation using hash sets. 
-- **User Redirection**: Redirects users to `/signin` if not logged in or on authenticated pages unnecessarily. 
-- **Undo/Redo (CTRL+Z) Implementation**: Store full state in Zustand to enable undo/redo functionality, planned for future development. 
+  - The navbar, "Exit Editor" button, and window close.
+- **Delete Node Feature**: Checks if node count from frontend is less than in the database, indicating node deletion. Implements backend validation using hash sets.
+- **User Redirection**: Redirects users to `/signin` if not logged in or on authenticated pages unnecessarily.
+- **Undo/Redo (CTRL+Z) Implementation**: Store full state in Zustand to enable undo/redo functionality, planned for future development.
 - **Workflow States (Draft, Active, Inactive)**: Workflow status management including:
   - Publishing for active status, toggling with unpublish for inactive status.
-  - Draft mode for editing and testing workflows. 
+  - Draft mode for editing and testing workflows.
 - **Form Data Management**: Six forms need to handle data collection and backend integration:
   - In-memory array of node objects to prevent redundant fetches by storing fetched node info in-memory, ensuring data is requested from the backend only when not already retrieved.
 
@@ -90,10 +96,10 @@ AutoMinds is a completely open-source platform that allows you to connect multip
 
 Contributions are welcome! To contribute:
 
-1. Fork the repository. 
-2. Create a new branch for your feature or bug report. 
-3. Submit a pull request for review. 
+1. Fork the repository.
+2. Create a new branch for your feature or bug report.
+3. Submit a pull request for review.
 
 ## 📜 License
-- For license details, see [`License`](/LICENSE) file.
 
+- For license details, see [`License`](/LICENSE) file.
