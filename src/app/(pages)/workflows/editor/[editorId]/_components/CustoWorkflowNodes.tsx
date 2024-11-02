@@ -52,7 +52,7 @@ export default function CustomWorkflowNode({ data }: { data: CustomNodeData }) {
 
   useEffect(()=>{
     if(isEditing)setIsSaved(false)
-  },[isEditing])
+  },[isEditing,setIsSaved]);
 
   const logo = useMemo(() => {
     if (data.nodeType === 'Google Drive') return <Database className="h-6 w-6" />;

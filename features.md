@@ -20,3 +20,6 @@ hhh
 <!-- Todo before 31  -->
 <!-- doing rn -->
 All 6 forms need one thing , that is to take data from form and put it in backend , and also we ofc wont fetch data for every node , so we will make a in memory array kinda thing of object , where if user fetch info for a node then he will get that from array first and then from fetch req if not fetched already ,
+
+
+Add redis queue for async taks

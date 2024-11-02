@@ -118,7 +118,7 @@ export default function EditorContent() {
       setEdges((eds) => addEdge(params, eds));
       setIsSaved(false);
     },
-    [setEdges],
+    [setEdges,setIsSaved],
   );
 
   const onDragOver = useCallback((event: DragEvent<HTMLDivElement>) => {
