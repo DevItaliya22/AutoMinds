@@ -67,7 +67,7 @@ const Header = () => {
         <div className="container mx-auto px-4 py-2 flex items-center justify-between">
           <h1
             onClick={() => handleExit('/')}
-            className="text-2xl font-bold cursor-pointer text-primary"
+            className="text-2xl font-bold       p-0 cursor-pointer text-primary"
           >
             Autominds
           </h1>
