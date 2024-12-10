@@ -6,13 +6,13 @@ import { authOptions } from '@/lib/authOptions';
 async function getGoogleInstance() {
   const session = await getServerSession(authOptions);
 
-  // if (!session || !session.user?.email || !session.accessToken) {
-  //   return null;
-  // }
-  // // console.log('Session : ', session);
-  // const access_token = session.accessToken;
+  if (!session || !session.user?.email || !session.accessToken) {
+    return null;
+  }
+  // console.log('Session : ', session);
+  const access_token = session.accessToken;
 
-  const access_token = '';
+  // const access_token = '';
 
   const auth = new google.auth.OAuth2();
   auth.setCredentials({ access_token });
@@ -289,26 +289,26 @@ async function createAndSendDraftEmail(data: {
 
 // Google drive functions
 
-async function listFolders(data: { pageSize: number }) {
+async function listFolders(data: { pageSize: number; parentFolderId?: string }) {
   const googleInstance = await getGoogleInstance();
-
   if (!googleInstance) {
     return { error: 'Unauthorized' };
   }
-
   const { drive } = googleInstance;
-
   try {
+    const query = data.parentFolderId
+      ? `'${data.parentFolderId}' in parents and mimeType='application/vnd.google-apps.folder'`
+      : "mimeType='application/vnd.google-apps.folder' and 'root' in parents";
+
     const response = await drive.files.list({
       pageSize: data.pageSize,
       fields: 'files(id, name)',
-      q: "mimeType='application/vnd.google-apps.folder'",
+      q: query,
     });
 
-    console.log('Folders fetched successfully');
     return { folders: response.data.files };
-  } catch (error) {
-    console.error('Error fetching folders:');
+  } catch(error) {
+    console.log('Error fetching folders:', error);
     return { error: 'Failed to fetch folders' };
   }
 }

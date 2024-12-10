@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import {
@@ -12,9 +12,11 @@ import {
 } from '@/components/ui/select';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { ChevronRight, File, Folder } from 'lucide-react';
+import { ChevronRight, Folder } from 'lucide-react';
 import type { GoogleDriveTriggerActions } from '@/lib/types';
 import axios from 'axios';
+import prisma from '@/lib/db';
+import { getGoogleNodeData } from '@/app/actions/getNodeAndTriggerData';
 
 interface ActionOption {
   value: GoogleDriveTriggerActions;
@@ -60,35 +62,70 @@ type Props = {
   nodeId: string;
 };
 
+type Folder = {
+  id: string;
+  name: string;
+}
+
 export default function GoogleDriveTrigger({ steps, nodeId }: Props) {
   const { workFlowSegment } = useParams<{ workFlowSegment: string }>();
   const router = useRouter();
   const path = `/workflows/${workFlowSegment}?step=${steps}`;
 
   const [action, setAction] = useState<GoogleDriveTriggerActions | ''>('');
-  const [selectedFolder, setSelectedFolder] = useState<string>('');
-  const [folderPath, setFolderPath] = useState<string[]>([]);
+  const [selectedFolder, setSelectedFolder] = useState<Folder>({id:'', name:''});
+  const [folderPath, setFolderPath] = useState<Folder[]>([]);
   const [selectedFileType, setSelectedFileType] = useState<string>('any');
-  const [customPattern, setCustomPattern] = useState<string>('');
+  const [mockFolders, setMockFolders] = useState<Folder[]>([]);
+  const [maxDepthAchieved, setMaxDepthAchieved] = useState(false);
 
-  const mockFolders = ['Documents', 'Images', 'Projects'];
-
-  const handleFolderSelect = (folder: string) => {
+  const handleFolderSelect = (folder: Folder) => {
     setSelectedFolder(folder);
     setFolderPath([...folderPath, folder]);
   };
 
   const handleBackFolder = () => {
     setFolderPath(folderPath.slice(0, -1));
-    setSelectedFolder('');
+    setSelectedFolder(folderPath[folderPath.length - 2] || {id:'', name:''});
   };
+
+  useEffect(() => {
+    const getData = async () => {
+      const data = await getGoogleNodeData(nodeId);
+      if (data) {
+        setAction(data?.GoogleDriveTriggersWhen as GoogleDriveTriggerActions);
+        setSelectedFileType(data.GoogleDriveTriggersMimeType as string);
+        setFolderPath(
+          data?.GoogleDriveTriggerFolderPath?.split("/").map((name: string, index: number) => ({ id: `${index}`, name })) || []
+        )
+        // setSelectedFolder({id : data?.GoogleDriveTriggerFolderId as string , name :data?.GoogleDriveTriggerFolderPath?.split('/')[data?.GoogleDriveTriggerFolderPath.length - 1] as string});
+      }
+    };
+    getData();
+  }, []);
+
+  useEffect(() => {
+    const getFolderNameData = async () => {
+      const parentFolderId = selectedFolder.id;
+      const data = await axios.post(`/api/google/drive/listFolders`, {pageSize : 10 , parentFolderId });
+      console.log(data.data?.folders);
+      if(data.data?.folders.length === 0){
+        setMaxDepthAchieved(true);
+      }else {
+        setMaxDepthAchieved(false);
+      }
+      setMockFolders(data.data?.folders || []);
+    }
+    getFolderNameData();
+  }, [selectedFolder]);
+
+    
 
   const handleClick = async () => {
     const data = {
       action: action,
-      selectedFolder: selectedFolder,
-      folderPath: folderPath,
-      customPattern: customPattern,
+      selectedFolder: selectedFolder.id,
+      folderPath: folderPath.map(folder => folder.name),
       selectedFileType: selectedFileType,
       isTrigger: true,
     };
@@ -154,23 +191,6 @@ export default function GoogleDriveTrigger({ steps, nodeId }: Props) {
                   ))}
                 </SelectContent>
               </Select>
-              {selectedFileType === 'any' && (
-                <div>
-                  <Label
-                    htmlFor="custompattern"
-                    className="text-lg font-semibold"
-                  >
-                    Custom file pattern (optional):
-                  </Label>
-                  <Input
-                    id="custompattern"
-                    placeholder="e.g., *.pdf, document*.docx"
-                    className="w-full mt-2"
-                    value={customPattern}
-                    onChange={(e) => setCustomPattern(e.target.value)}
-                  />
-                </div>
-              )}
             </div>
           )}
 
@@ -182,7 +202,7 @@ export default function GoogleDriveTrigger({ steps, nodeId }: Props) {
               <div className="flex items-center space-x-2 text-sm text-muted-foreground">
                 {folderPath.map((folder, index) => (
                   <span key={index}>
-                    {folder} <ChevronRight className="inline h-4 w-4" />
+                    {folder.name} <ChevronRight className="inline h-4 w-4" />
                   </span>
                 ))}
               </div>
@@ -196,17 +216,21 @@ export default function GoogleDriveTrigger({ steps, nodeId }: Props) {
                     Back
                   </Button>
                 )}
-                {mockFolders.map((folder) => (
-                  <Button
-                    key={folder}
-                    variant="outline"
-                    onClick={() => handleFolderSelect(folder)}
-                    className="w-full"
-                  >
-                    <Folder className="mr-2 h-4 w-4" />
-                    {folder}
-                  </Button>
-                ))}
+                {maxDepthAchieved ? (
+                  <p>Max Depth Achieved</p>
+                ) : (
+                  mockFolders.map((folder: Folder) => (
+                    <Button
+                      key={folder.id}
+                      variant="outline"
+                      onClick={() => handleFolderSelect(folder)}
+                      className="w-full"
+                    >
+                      <Folder className="mr-2 h-4 w-4" />
+                      {folder.name}
+                    </Button>
+                  ))
+                )}
               </div>
               <div>
                 <Label htmlFor="filepattern" className="text-lg font-semibold">
