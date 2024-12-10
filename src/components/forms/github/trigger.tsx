@@ -75,9 +75,8 @@ export default function GitHubTrigger({ steps, nodeId }: Props) {
 
   const [trigger, setTrigger] = useState<GitHubTrigger | ''>('');
   const [repository, setRepository] = useState<string>('');
-  const [userRepos, setUserRepos] = useState([]);
-
-  const mockRepositories = ['user/repo1', 'user/repo2', 'organization/repo3'];
+  const [userRepos, setUserRepos] = useState<string[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   const handleClick = async () => {
     const data = {
@@ -86,12 +85,55 @@ export default function GitHubTrigger({ steps, nodeId }: Props) {
       action: trigger,
     };
 
-    const res = await axios.post(`/api/github/${workFlowSegment}/${nodeId}`);
+    const res = await axios.post(`/api/github/${workFlowSegment}/${nodeId}`, data);
 
     if (res.data.success) {
       router.push(path);
     }
   };
+
+  useEffect(() => {
+    const getRepos = async () => {
+      try {
+        const res = await axios.get('/api/github/getRepos');
+        setUserRepos(res.data.data);
+      } catch (error) {
+        console.error('Failed to fetch repositories:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    getRepos();
+  }, [nodeId]);
+
+  useEffect(() => {
+    const getData = async () => {
+      try {
+        const res = await axios.get(`/api/github/getAllData?nodeId=${nodeId}`);
+        const data = res.data.data;
+        
+        if (data.GithubTriggerRepoName) {
+          const fullRepoName = `${data.GithubTriggerRepoOwner}/${data.GithubTriggerRepoName}`;
+          setRepository(fullRepoName);
+        }
+        
+        if (data.GithubTriggersWhen) {
+          setTrigger(data.GithubTriggersWhen);
+        }
+      } catch (error) {
+        console.error('Failed to fetch trigger data:', error);
+      }
+    };
+    getData();
+  }, [nodeId]);
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-[200px]">
+        <p className="text-muted-foreground">Loading repositories...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="bg-background p-6 md:p-12">
@@ -137,9 +179,9 @@ export default function GitHubTrigger({ steps, nodeId }: Props) {
                   <SelectValue placeholder="Choose a repository" />
                 </SelectTrigger>
                 <SelectContent>
-                  {mockRepositories.map((repo) => (
+                  {userRepos.map((repo: string) => (
                     <SelectItem key={repo} value={repo}>
-                      {repo}
+                      {repo.split('/')[1]}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -153,6 +195,7 @@ export default function GitHubTrigger({ steps, nodeId }: Props) {
             variant="default"
             className="w-full md:w-auto px-8 py-2 text-lg"
             onClick={handleClick}
+            disabled={!trigger || (trigger !== 'newRepository' && trigger !== 'newCollaborator' && !repository)}
           >
             Save and Continue
           </Button>

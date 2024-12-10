@@ -14,8 +14,14 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
-import type { GitHubAction } from '@/lib/types';
 import axios from 'axios';
+
+type GitHubAction =
+  | 'createGist'
+  | 'createIssue'
+  | 'createPullRequest'
+  | 'deleteBranch'
+  | 'createBranch';
 
 interface ActionOption {
   value: GitHubAction;
@@ -69,16 +75,48 @@ export default function GitHubAction({ steps, nodeId }: Props) {
   const [fileName, setFileName] = useState<string>('');
   const [description, setDescription] = useState<string>('');
   const [isPublic, setIsPublic] = useState<boolean>(false);
-
-  const [userRepos, setUserRepos] = useState([]);
+  const [userRepos, setUserRepos] = useState<string[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchRepos = async () => {
-      const res = await axios.get('/api/github/getRepos');
-      setUserRepos(res.data.data);
+      try {
+        const res = await axios.get('/api/github/getRepos');
+        setUserRepos(res.data.data);
+      } catch (error) {
+        console.error('Failed to fetch repositories:', error);
+      } finally {
+        setIsLoading(false);
+      }
     };
     fetchRepos();
-  });
+  }, []);
+
+  useEffect(() => {
+    const getData = async () => {
+      try {
+        const res = await axios.get(`/api/github/getAllData?nodeId=${nodeId}`);
+        const data = res.data.data;
+
+        if (data.GithubActionType) setAction(data.GithubActionType);
+        if (data.GithubActionRepoName && data.GithubActionRepoOwner) {
+          setRepository(`${data.GithubActionRepoOwner}/${data.GithubActionRepoName}`);
+        }
+        if (data.GithubActionBranchName) setBranch(data.GithubActionBranchName);
+        if (data.GithubActionGistName) setFileName(data.GithubActionGistName);
+        if (data.GithubActionGistDescription) setDescription(data.GithubActionGistDescription);
+        if (data.GithubActionGistBody) setBody(data.GithubActionGistBody);
+        if (data.GitHubActionisPublic !== null) setIsPublic(data.GitHubActionisPublic);
+        if (data.GithubActionIssueTitle) setTitle(data.GithubActionIssueTitle);
+        if (data.GithubActionIssueBody) setBody(data.GithubActionIssueBody);
+        if (data.GithubActionPRTitle) setTitle(data.GithubActionPRTitle);
+        if (data.GithubActionPRBody) setBody(data.GithubActionPRBody);
+      } catch (error) {
+        console.error('Failed to fetch action data:', error);
+      }
+    };
+    getData();
+  }, [nodeId]);
 
   const handleClick = async () => {
     const data = {
@@ -100,6 +138,14 @@ export default function GitHubAction({ steps, nodeId }: Props) {
       router.push(path);
     }
   };
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-[200px]">
+        <p className="text-muted-foreground">Loading repositories...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="bg-background p-6 md:p-12">
@@ -132,7 +178,8 @@ export default function GitHubAction({ steps, nodeId }: Props) {
 
           {(action === 'createIssue' ||
             action === 'createPullRequest' ||
-            action === 'createBranch') && (
+            action === 'createBranch' ||
+            action === 'deleteBranch') && (
             <div>
               <Label htmlFor="repository" className="text-lg font-semibold">
                 Select a repository:
@@ -142,12 +189,11 @@ export default function GitHubAction({ steps, nodeId }: Props) {
                   <SelectValue placeholder="Choose a repository" />
                 </SelectTrigger>
                 <SelectContent>
-                  {userRepos &&
-                    userRepos.map((repo) => (
-                      <SelectItem key={repo} value={repo}>
-                        {repo}
-                      </SelectItem>
-                    ))}
+                  {userRepos.map((repo) => (
+                    <SelectItem key={repo} value={repo}>
+                      {repo.split('/')[1]}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             </div>
@@ -201,6 +247,7 @@ export default function GitHubAction({ steps, nodeId }: Props) {
               />
             </div>
           )}
+
           {action === 'createGist' && (
             <>
               <div>

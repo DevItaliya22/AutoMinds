@@ -1,5 +1,6 @@
 'use client';
-import { useState } from 'react';
+
+import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useParams, useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
@@ -14,15 +15,21 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
-import type { GoogleDriveAction } from '@/lib/types';
 
-interface ActionOption {
-  value: GoogleDriveAction;
-  label: string;
-  description: string;
+type GoogleDriveAction = 
+  | 'copyFile'
+  | 'createFile'
+  | 'createFolder'
+  | 'deleteFile'
+  | 'moveFile'
+  | 'updateName';
+
+interface DriveItem {
+  id: string;
+  name: string;
 }
 
-const actionOptions: ActionOption[] = [
+const actionOptions = [
   {
     value: 'copyFile',
     label: 'Copy File',
@@ -65,6 +72,10 @@ export default function GoogleDriveAction({ steps, nodeId }: Props) {
   const router = useRouter();
   const path = `/workflows/${workFlowSegment}?step=${steps}`;
 
+  const [files, setFiles] = useState<DriveItem[]>([]);
+  const [folders, setFolders] = useState<DriveItem[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
   const [action, setAction] = useState<GoogleDriveAction | ''>('');
   const [fileId, setFileId] = useState<string>('');
   const [fileName, setFileName] = useState<string>('');
@@ -72,8 +83,48 @@ export default function GoogleDriveAction({ steps, nodeId }: Props) {
   const [fileContent, setFileContent] = useState<string>('');
   const [sourceFolderId, setSourceFolderId] = useState<string>('');
   const [destinationFolderId, setDestinationFolderId] = useState<string>('');
-  const [query, setQuery] = useState<string>('');
   const [isPublic, setIsPublic] = useState<boolean>(false);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [filesRes, foldersRes] = await Promise.all([
+          axios.post("/api/google/drive/getAllFiles", { pageSize: 20 }),
+          axios.post("/api/google/drive/listFolders", { pageSize: 20, parentFolderId: "" })
+        ]);
+
+        setFiles(filesRes.data.files || []);
+        setFolders(foldersRes.data.folders || []);
+        setIsLoading(false);
+      } catch (err) {
+        console.error('Error fetching drive data:', err);
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    const getData = async () => {
+      try {
+        const res = await axios.get(`/api/google/drive/getAllData?nodeId=${nodeId}`);
+        const data = res.data.data;
+
+        setAction(data.GoogleDriveActionType || '');
+        setFileId(data.GoogleDriveActionFileId || '');
+        setFileName(data.GoogleDriveActionFileName || '');
+        setFolderName(data.GoogleDriveActionFolderName || '');
+        setFileContent(data.GoogleDriveActionContent || '');
+        setSourceFolderId(data.GoogleDriveActionSourceFolderId || '');
+        setDestinationFolderId(data.GoogleDriveActionDestinationFolderId || '');
+        setIsPublic(data.GoogleDriveActionIsPublic || false);
+      } catch (err) {
+        console.error('Failed to fetch data:', err);
+      }
+    };
+    getData();
+  }, [nodeId]);
 
   const handleSave = async () => {
     const data = {
@@ -84,7 +135,6 @@ export default function GoogleDriveAction({ steps, nodeId }: Props) {
       fileContent,
       sourceFolderId,
       destinationFolderId,
-      query,
       isPublic,
       isTrigger: false,
     };
@@ -97,11 +147,54 @@ export default function GoogleDriveAction({ steps, nodeId }: Props) {
     }
   };
 
+  const renderFileSelect = (
+    label: string,
+    value: string,
+    onChange: (value: string) => void,
+    includeFiles = true,
+    includeFolders = false
+  ) => {
+    const items = [
+      ...(includeFiles ? files.map(file => ({
+        id: file.id,
+        label: `File: ${file.name}`,
+      })) : []),
+      ...(includeFolders ? folders.map(folder => ({
+        id: folder.id,
+        label: `Folder: ${folder.name}`,
+      })) : []),
+    ];
+
+    return (
+      <div className="space-y-2">
+        <Label htmlFor={label} className="text-lg font-semibold">
+          {label}
+        </Label>
+        <Select value={value} onValueChange={onChange}>
+          <SelectTrigger id={label} className="w-full">
+            <SelectValue placeholder={`Select ${label.toLowerCase()}`} />
+          </SelectTrigger>
+          <SelectContent>
+            {items.map((item) => (
+              <SelectItem key={item.id} value={item.id}>
+                {item.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
+    );
+  };
+
+  if (isLoading) {
+    return <div className="p-6">Loading...</div>;
+  }
+
   return (
     <div className="bg-background p-6 md:p-12">
       <div className="max-w-4xl mx-auto space-y-8">
         <h1 className="text-3xl font-bold text-primary">
-          Google Drive {nodeId} {workFlowSegment}
+          Google Drive Action
         </h1>
         <div className="space-y-6">
           <div>
@@ -127,38 +220,29 @@ export default function GoogleDriveAction({ steps, nodeId }: Props) {
             </Select>
           </div>
 
-          {(action === 'copyFile' ||
-            action === 'deleteFile' ||
-            action === 'replaceFile' ||
-            action === 'updateName') && (
-            <div>
-              <Label htmlFor="fileId" className="text-lg font-semibold">
-                File ID:
-              </Label>
-              <Input
-                id="fileId"
-                placeholder="Enter file ID"
-                className="w-full mt-2"
-                value={fileId}
-                onChange={(e) => setFileId(e.target.value)}
-              />
-            </div>
+          {(action === 'copyFile' || action === 'deleteFile') && (
+            renderFileSelect('Select File', fileId, setFileId, true, false)
           )}
 
-          {(action === 'createFile' ||
-            action === 'createFolder' ||
-            action === 'updateName' ||
-            action === 'uploadFile') && (
+          {action === 'updateName' && (
+            renderFileSelect('Select Item', fileId, setFileId, true, true)
+          )}
+
+          {(action === 'createFile' || action === 'createFolder') && (
             <div>
               <Label htmlFor="fileName" className="text-lg font-semibold">
-                File/Folder Name:
+                {action === 'createFile' ? 'File Name:' : 'Folder Name:'}
               </Label>
               <Input
                 id="fileName"
-                placeholder="Enter file or folder name"
+                placeholder={`Enter ${action === 'createFile' ? 'file' : 'folder'} name`}
                 className="w-full mt-2"
-                value={fileName}
-                onChange={(e) => setFileName(e.target.value)}
+                value={action === 'createFile' ? fileName : folderName}
+                onChange={(e) => 
+                  action === 'createFile' 
+                    ? setFileName(e.target.value)
+                    : setFolderName(e.target.value)
+                }
               />
             </div>
           )}
@@ -180,55 +264,12 @@ export default function GoogleDriveAction({ steps, nodeId }: Props) {
 
           {action === 'moveFile' && (
             <>
-              <div>
-                <Label
-                  htmlFor="sourceFolderId"
-                  className="text-lg font-semibold"
-                >
-                  Source Folder ID:
-                </Label>
-                <Input
-                  id="sourceFolderId"
-                  placeholder="Enter source folder ID"
-                  className="w-full mt-2"
-                  value={sourceFolderId}
-                  onChange={(e) => setSourceFolderId(e.target.value)}
-                />
-              </div>
-              <div>
-                <Label
-                  htmlFor="destinationFolderId"
-                  className="text-lg font-semibold"
-                >
-                  Destination Folder ID:
-                </Label>
-                <Input
-                  id="destinationFolderId"
-                  placeholder="Enter destination folder ID"
-                  className="w-full mt-2"
-                  value={destinationFolderId}
-                  onChange={(e) => setDestinationFolderId(e.target.value)}
-                />
-              </div>
+              {renderFileSelect('Source Folder', sourceFolderId, setSourceFolderId, false, true)}
+              {renderFileSelect('Destination Folder', destinationFolderId, setDestinationFolderId, false, true)}
             </>
           )}
 
-          {action === 'retrieveFiles' && (
-            <div>
-              <Label htmlFor="query" className="text-lg font-semibold">
-                Query:
-              </Label>
-              <Input
-                id="query"
-                placeholder="Enter search query"
-                className="w-full mt-2"
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-              />
-            </div>
-          )}
-
-          {(action === 'createFile' || action === 'uploadFile') && (
+          {action === 'createFile' && (
             <div className="flex items-center space-x-2">
               <Switch
                 id="public"

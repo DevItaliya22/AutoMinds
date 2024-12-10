@@ -15,8 +15,6 @@ import { Label } from '@/components/ui/label';
 import { ChevronRight, Folder } from 'lucide-react';
 import type { GoogleDriveTriggerActions } from '@/lib/types';
 import axios from 'axios';
-import prisma from '@/lib/db';
-import { getGoogleNodeData } from '@/app/actions/getNodeAndTriggerData';
 
 interface ActionOption {
   value: GoogleDriveTriggerActions;
@@ -91,14 +89,16 @@ export default function GoogleDriveTrigger({ steps, nodeId }: Props) {
 
   useEffect(() => {
     const getData = async () => {
-      const data = await getGoogleNodeData(nodeId);
+      const res = await axios.get(`/api/google/drive/getAllData?nodeId=${nodeId}`);
+      const data = res.data.data;
+      
       if (data) {
         setAction(data?.GoogleDriveTriggersWhen as GoogleDriveTriggerActions);
         setSelectedFileType(data.GoogleDriveTriggersMimeType as string);
         setFolderPath(
           data?.GoogleDriveTriggerFolderPath?.split("/").map((name: string, index: number) => ({ id: `${index}`, name })) || []
         )
-        // setSelectedFolder({id : data?.GoogleDriveTriggerFolderId as string , name :data?.GoogleDriveTriggerFolderPath?.split('/')[data?.GoogleDriveTriggerFolderPath.length - 1] as string});
+        setSelectedFolder({id : data?.GoogleDriveTriggerFolderId as string , name :data?.GoogleDriveTriggerFolderPath?.split('/')[data?.GoogleDriveTriggerFolderPath.length - 1] as string});
       }
     };
     getData();
@@ -231,16 +231,6 @@ export default function GoogleDriveTrigger({ steps, nodeId }: Props) {
                     </Button>
                   ))
                 )}
-              </div>
-              <div>
-                <Label htmlFor="filepattern" className="text-lg font-semibold">
-                  File name pattern (optional):
-                </Label>
-                <Input
-                  id="filepattern"
-                  placeholder="e.g., *.pdf, document*.docx"
-                  className="w-full mt-2"
-                />
               </div>
             </div>
           )}
