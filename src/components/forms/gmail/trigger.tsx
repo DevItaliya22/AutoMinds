@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import {
@@ -20,6 +20,7 @@ import {
   MessageSquare,
 } from 'lucide-react';
 import type { GmailTriggerActions } from '@/lib/types';
+import axios from 'axios';
 
 interface ActionOption {
   value: GmailTriggerActions;
@@ -42,13 +43,6 @@ const actionOptions: ActionOption[] = [
     icon: <Mail className="mr-2 h-4 w-4" />,
   },
   {
-    value: 'newEmailMatchingSearch',
-    label: 'New Email Matching Search',
-    description:
-      'Triggers when you receive a new email that matches a search string you provide.',
-    icon: <Search className="mr-2 h-4 w-4" />,
-  },
-  {
     value: 'newLabel',
     label: 'New Label',
     description: 'Triggers when you add a new label.',
@@ -59,20 +53,7 @@ const actionOptions: ActionOption[] = [
     label: 'New Labeled Email',
     description: 'Triggers when you label an email.',
     icon: <Tag className="mr-2 h-4 w-4" />,
-  },
-  {
-    value: 'newStarredEmail',
-    label: 'New Starred Email',
-    description:
-      'Triggers when you receive a new email and star it within two days.',
-    icon: <Star className="mr-2 h-4 w-4" />,
-  },
-  {
-    value: 'newThread',
-    label: 'New Thread',
-    description: 'Triggers when a new thread starts.',
-    icon: <MessageSquare className="mr-2 h-4 w-4" />,
-  },
+  }
 ];
 
 type Props = {
@@ -80,19 +61,58 @@ type Props = {
   steps: number;
 };
 
-export default function GmailTrigger({ steps }: Props) {
+export default function GmailTrigger({ steps , nodeId }: Props) {
   const { workFlowSegment } = useParams<{ workFlowSegment: string }>();
   const router = useRouter();
   const path = `/workflows/${workFlowSegment}?step=${steps}`;
 
   const [action, setAction] = useState<GmailTriggerActions | ''>('');
-  const [mailbox, setMailbox] = useState<string>('');
   const [searchString, setSearchString] = useState<string>('');
   const [label, setLabel] = useState<string>('');
+  const [labelOptions, setLabelOptions] = useState<string[]>([]);
 
-  const handleClick = () => {
-    router.push(path);
+  const handleClick =async () => {
+    const data = {
+      isTrigger: true,
+      triggerAction: action,
+      triggerLabel: label,
+    }
+    const res = await axios.post(`/api/google/gmail/${workFlowSegment}/${nodeId}`, data);
+
+    if (res.data.success) {
+      router.push(path);
+    }
   };
+
+  const fetchLabels = async () => {
+    try {
+      const res = await axios.get('/api/gmail/listLabels');
+      const labels = res.data.labels; 
+      setLabelOptions(labels);
+    } catch (error) {
+      console.error('Failed to fetch labels:', error);
+    }
+  };
+
+  useEffect(() => {
+    const getData = async () => {
+      try {
+        const res = await axios.get(`/api/google/gmail/getAllData?nodeId=${nodeId}`);
+        const data = res.data.data;
+        
+        if(data.GmailTriggerLabel){
+          setLabel(data.GmailTriggerLabel);
+        }
+        if(data.GmailTriggersWhen){
+          setAction(data.GmailTriggersWhen);
+        }
+
+      } catch (error) {
+        console.error('Failed to fetch trigger data:', error);
+      }
+    };
+    getData();
+  }, [nodeId]);
 
   return (
     <div className="bg-background p-6 md:p-12">
@@ -122,21 +142,6 @@ export default function GmailTrigger({ steps }: Props) {
               </SelectContent>
             </Select>
           </div>
-
-          {(action === 'newEmail' || action === 'newEmailMatchingSearch') && (
-            <div>
-              <Label htmlFor="mailbox" className="text-lg font-semibold">
-                Mailbox:
-              </Label>
-              <Input
-                id="mailbox"
-                placeholder="e.g., INBOX, [Gmail]/Sent Mail"
-                className="w-full mt-2"
-                value={mailbox}
-                onChange={(e) => setMailbox(e.target.value)}
-              />
-            </div>
-          )}
 
           {action === 'newEmailMatchingSearch' && (
             <div>

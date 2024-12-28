@@ -101,6 +101,13 @@ model GoogleNode {
   GoogleDriveActionDestinationFolderId String? // this is the destination folder id for moveFile action
 
   // Google Mail Trigger Info
+  GmailTriggersWhen        String? // newMail , newMailFrom , newMailTo , newMailSubject
+  GmailTriggerLabel       String? // this is the label on which trigger will be performed
+  GmailActionLabel      String? // this is the label on which action will be performed
+  GmailActionEmail    String? // this is the email on which action will be performed
+  GmailActionSubject  String? // this is the subject of the email
+  GmailActionBody     String? // this is the body of the email
+  GmailactionTo      String? // this is the to of the email
   // Google Mail Action Info
 
 }

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import {
@@ -14,6 +14,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Tag, Mail, Reply, Trash, Send } from 'lucide-react';
+import axios, { getAdapter } from 'axios';
 
 type GmailActionType =
   | 'addLabel'
@@ -46,12 +47,6 @@ const actionOptions: ActionOption[] = [
     icon: <Mail className="mr-2 h-4 w-4" />,
   },
   {
-    value: 'createDraftReply',
-    label: 'Create Draft Reply',
-    description: 'Create a draft reply to an existing email.',
-    icon: <Reply className="mr-2 h-4 w-4" />,
-  },
-  {
     value: 'createLabel',
     label: 'Create Label',
     description: 'Creates a new label.',
@@ -70,17 +65,11 @@ const actionOptions: ActionOption[] = [
     icon: <Tag className="mr-2 h-4 w-4" />,
   },
   {
-    value: 'replyToEmail',
-    label: 'Reply to Email',
-    description: 'Send a reply to an email message.',
-    icon: <Reply className="mr-2 h-4 w-4" />,
-  },
-  {
     value: 'sendEmail',
     label: 'Send Email',
     description: 'Create and send a new email message.',
     icon: <Send className="mr-2 h-4 w-4" />,
-  },
+  }
 ];
 
 type Props = {
@@ -88,7 +77,7 @@ type Props = {
   steps: number;
 };
 
-export default function GmailActions({ steps }: Props) {
+export default function GmailActions({ steps,nodeId }: Props) {
   const { workFlowSegment } = useParams<{ workFlowSegment: string }>();
   const router = useRouter();
   const path = `/workflows/${workFlowSegment}?step=${steps}`;
@@ -99,10 +88,60 @@ export default function GmailActions({ steps }: Props) {
   const [to, setTo] = useState<string>('');
   const [subject, setSubject] = useState<string>('');
   const [body, setBody] = useState<string>('');
+  const [labelOptions, setLabelOptions] = useState<string[]>([]);
 
-  const handleClick = () => {
-    router.push(path);
+  const handleClick =async () => {
+    const data = {
+      isTrigger: false,
+      actionLabel: label,
+      actionEmail: to,
+      actionSubject: subject,
+      actionBody: body,
+      actionTo: action,
+    }
+    const res = await axios.post(`/api/google/gmail/${workFlowSegment}/${nodeId}`, data);
+    if(res.data.success){
+      router.push(path);
+    }
   };
+
+  const fetchLabels = async () => {
+    try {
+      const res = await axios.get('/api/google/gmail/listLabels');
+      const labels = res.data.labels; 
+      setLabelOptions(labels.map((label: { name: string; }) => label.name));
+    } catch (error) {
+      console.error('Failed to fetch labels:', error);
+    }
+  };
+
+  useEffect(() => {
+    if (action === 'addLabel' || action === 'removeLabel') {
+      fetchLabels();
+    }
+  }, [action]);
+  
+
+  useEffect(() => {
+    const getData = async () => {
+      try {
+        const res = await axios.get(`/api/google/gmail/getAllData?nodeId=${nodeId}`);
+        const data = res.data.data;
+        console.log('Fetched Data:', data);
+  
+        setLabel(data?.GmailActionLabel || '');
+        setEmailId(data?.GmailActionEmail || '');
+        setSubject(data?.GmailActionSubject || '');
+        setBody(data?.GmailActionBody || '');
+        setTo(data?.GmailActionEmail || '');
+        setAction(data?.GmailactionTo || '');
+      } catch (error) {
+        console.error('Failed to fetch trigger data:', error);
+      }
+    };
+    getData();
+  }, [nodeId]);
+  
 
   return (
     <div className="bg-background p-6 md:p-12">
@@ -133,22 +172,29 @@ export default function GmailActions({ steps }: Props) {
             </Select>
           </div>
 
-          {(action === 'addLabel' ||
-            action === 'removeLabel' ||
-            action === 'createLabel') && (
-            <div>
-              <Label htmlFor="label" className="text-lg font-semibold">
-                Label:
-              </Label>
-              <Input
-                id="label"
-                placeholder="Enter label name"
-                className="w-full mt-2"
-                value={label}
-                onChange={(e) => setLabel(e.target.value)}
-              />
-            </div>
-          )}
+          {(action === 'addLabel' || action === 'removeLabel' || action === 'createLabel') && (
+  <div>
+    <Label htmlFor="label" className="text-lg font-semibold">
+      Label:
+    </Label>
+    <Select
+      onValueChange={(value) => setLabel(value)}
+      value={label}
+    >
+      <SelectTrigger id="label" className="w-full mt-2">
+        <SelectValue placeholder="Choose a label" />
+      </SelectTrigger>
+      <SelectContent>
+        {labelOptions.map((option) => (
+          <SelectItem key={option} value={option}>
+            {option}
+          </SelectItem>
+        ))}
+      </SelectContent>
+    </Select>
+  </div>
+)}
+
 
           {(action === 'addLabel' ||
             action === 'removeLabel' ||

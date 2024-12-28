@@ -88,6 +88,7 @@ async function ListLabels() {
 
     return { labels: response.data.labels };
   } catch (error) {
+    console.log(error)
     return { error: 'Failed to list labels' };
   }
 }
