@@ -70,11 +70,13 @@ function WorkFlowSegment() {
             <GoogleDriveTrigger
               steps={currentStep + 1}
               nodeId={nodes[currentStep - 1].id}
+            isLast={currentStep === nodes.length}
             />
           ) : (
             <GoogleDriveAction
               steps={currentStep + 1}
               nodeId={nodes[currentStep - 1].id}
+            isLast={currentStep === nodes.length}
             />
           );
         } else if (node.googleNode?.ServiceName === 'GoogleMail') {
@@ -82,11 +84,13 @@ function WorkFlowSegment() {
             <GmailTrigger
               steps={currentStep + 1}
               nodeId={nodes[currentStep - 1].id}
+            isLast={currentStep === nodes.length}
             />
           ) : (
             <GmailActions
               steps={currentStep + 1}
               nodeId={nodes[currentStep - 1].id}
+            isLast={currentStep === nodes.length}
             />
           );
         }
@@ -96,11 +100,13 @@ function WorkFlowSegment() {
           <GitHubTrigger
             steps={currentStep + 1}
             nodeId={nodes[currentStep - 1].id}
+            isLast={currentStep === nodes.length}
           />
         ) : (
           <GitHubAction
             steps={currentStep + 1}
             nodeId={nodes[currentStep - 1].id}
+            isLast={currentStep === nodes.length}
           />
         );
       default:

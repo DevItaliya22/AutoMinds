@@ -59,12 +59,13 @@ const actionOptions: ActionOption[] = [
 type Props = {
   nodeId: string;
   steps: number;
+  isLast: boolean;
 };
 
-export default function GmailTrigger({ steps , nodeId }: Props) {
+export default function GmailTrigger({ steps , nodeId , isLast }: Props) {
   const { workFlowSegment } = useParams<{ workFlowSegment: string }>();
   const router = useRouter();
-  const path = `/workflows/${workFlowSegment}?step=${steps}`;
+  const path = isLast ?`/workflows/${workFlowSegment}?step=${steps-1}` : `/workflows/${workFlowSegment}?step=${steps}`;
 
   const [action, setAction] = useState<GmailTriggerActions | ''>('');
   const [searchString, setSearchString] = useState<string>('');

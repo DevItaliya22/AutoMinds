@@ -65,12 +65,13 @@ const actionOptions = [
 type Props = {
   steps: number;
   nodeId: string;
+  isLast: boolean;
 };
 
-export default function GoogleDriveAction({ steps, nodeId }: Props) {
+export default function GoogleDriveAction({ steps, nodeId, isLast }: Props) {
   const { workFlowSegment } = useParams<{ workFlowSegment: string }>();
   const router = useRouter();
-  const path = `/workflows/${workFlowSegment}?step=${steps}`;
+  const path = isLast ?`/workflows/${workFlowSegment}?step=${steps-1}` : `/workflows/${workFlowSegment}?step=${steps}`;
 
   const [files, setFiles] = useState<DriveItem[]>([]);
   const [folders, setFolders] = useState<DriveItem[]>([]);

@@ -74,13 +74,14 @@ const actionOptions: ActionOption[] = [
 
 type Props = {
   nodeId: string;
+  isLast : boolean;
   steps: number;
 };
 
-export default function GmailActions({ steps,nodeId }: Props) {
+export default function GmailActions({ steps,nodeId,isLast }: Props) {
   const { workFlowSegment } = useParams<{ workFlowSegment: string }>();
   const router = useRouter();
-  const path = `/workflows/${workFlowSegment}?step=${steps}`;
+  const path = isLast ?`/workflows/${workFlowSegment}?step=${steps-1}` : `/workflows/${workFlowSegment}?step=${steps}`;
 
   const [action, setAction] = useState<GmailActionType | ''>('');
   const [label, setLabel] = useState<string>('');

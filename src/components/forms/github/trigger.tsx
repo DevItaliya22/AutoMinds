@@ -66,12 +66,13 @@ const triggerOptions: TriggerOption[] = [
 type Props = {
   nodeId: string;
   steps: number;
+  isLast :boolean
 };
 
-export default function GitHubTrigger({ steps, nodeId }: Props) {
+export default function GitHubTrigger({ steps, nodeId,isLast }: Props) {
   const { workFlowSegment } = useParams<{ workFlowSegment: string }>();
   const router = useRouter();
-  const path = `/workflows/${workFlowSegment}?step=${steps}`;
+  const path = isLast ?`/workflows/${workFlowSegment}?step=${steps-1}` : `/workflows/${workFlowSegment}?step=${steps}`;
 
   const [trigger, setTrigger] = useState<GitHubTrigger | ''>('');
   const [repository, setRepository] = useState<string>('');

@@ -58,17 +58,19 @@ const mockFileTypes = [
 type Props = {
   steps: number;
   nodeId: string;
+  isLast  : boolean;
 };
 
 type Folder = {
   id: string;
   name: string;
+
 }
 
-export default function GoogleDriveTrigger({ steps, nodeId }: Props) {
+export default function GoogleDriveTrigger({ steps, nodeId ,isLast}: Props) {
   const { workFlowSegment } = useParams<{ workFlowSegment: string }>();
   const router = useRouter();
-  const path = `/workflows/${workFlowSegment}?step=${steps}`;
+  const path = isLast ?`/workflows/${workFlowSegment}?step=${steps-1}` : `/workflows/${workFlowSegment}?step=${steps}`;
 
   const [action, setAction] = useState<GoogleDriveTriggerActions | ''>('');
   const [selectedFolder, setSelectedFolder] = useState<Folder>({id:'', name:''});
@@ -102,7 +104,7 @@ export default function GoogleDriveTrigger({ steps, nodeId }: Props) {
       }
     };
     getData();
-  }, []);
+  }, [nodeId]);
 
   useEffect(() => {
     const getFolderNameData = async () => {
