@@ -8,14 +8,19 @@ AutoMinds is a completely open-source platform that allows you to connect multip
 
 ## 📑 Table of Contents
 
-- [✨ Features](#features)
-- [📘 Steps](#steps)
-- [🔧 Usage](#usage)
-- [🔗 Supported Integrations](#supported-integrations)
-- [⚙️ Workflow Setup](#workflow-setup)
-- [📋 Todos & Upcoming Features](#todos--upcoming-features)
-- [🤝 Contributing](#contributing)
-- [📜 License](#license)
+- [AutoMinds](#autominds)
+  - [🌟 Overview](#-overview)
+  - [📑 Table of Contents](#-table-of-contents)
+  - [✨ Features](#-features)
+- [📘 Steps](#-steps)
+  - [🔧 Usage](#-usage)
+  - [🔗 Supported Integrations](#-supported-integrations)
+  - [⚙️ Workflow Setup](#️-workflow-setup)
+    - [Google Drive Trigger Options](#google-drive-trigger-options)
+    - [State Management with Zustand](#state-management-with-zustand)
+  - [📋 Todos \& Upcoming Features](#-todos--upcoming-features)
+  - [🤝 Contributing](#-contributing)
+  - [📜 License](#-license)
 
 ## ✨ [Features](/features.md)
 
@@ -103,6 +108,3 @@ Contributions are welcome! To contribute:
 ## 📜 License
 
 - For license details, see [`License`](/LICENSE) file.
-
-
-Readme
