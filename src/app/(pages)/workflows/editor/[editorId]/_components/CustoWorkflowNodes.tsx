@@ -38,13 +38,16 @@ type CustomNodeData = {
   nodeType: 'Google Drive' | 'Gmail' | 'Github';
 };
 
+
 export default function CustomWorkflowNode({ data }: { data: CustomNodeData }) {
   const { isEditing, setIsEditing } = useWorkflowStore((state: any) => ({
     isEditing: state.isEditing,
     setIsEditing: state.setIsEditing,
   }));
   const nodeId = useNodeId();
+  // this is the main thing 
   const { setNodes, setEdges } = useReactFlow();
+
   const { isSaved, setIsSaved } = useIsWorkflowSavedStore(
     (state: WorkflowState) => ({
       isSaved: state.isSaved,
@@ -79,7 +82,6 @@ export default function CustomWorkflowNode({ data }: { data: CustomNodeData }) {
 
   const handleDelete = () => {
     if (data.type === 'Trigger') {
-      // Show an error message or handle the case where deletion is not allowed
       console.log('Cannot delete trigger node');
       return;
     }
@@ -96,7 +98,6 @@ export default function CustomWorkflowNode({ data }: { data: CustomNodeData }) {
 
   const handleConfirmEdit = () => {
     if (!isValidEdit()) {
-      // Show an error message or handle the invalid input
       console.log('Name and description are required');
       return;
     }
