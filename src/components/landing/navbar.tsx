@@ -15,7 +15,7 @@ const Navbar = () => {
         <Link
           href={{
             pathname:
-              status === 'authenticated' ? '/dashboard' : '/auth/signin',
+              status === 'authenticated' ? '/workflows' : '/auth/signin',
           }}
           className="relative inline-flex h-10 overflow-hidden rounded-full p-[2px] "
         >

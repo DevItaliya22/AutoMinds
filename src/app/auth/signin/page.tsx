@@ -11,7 +11,7 @@ export default function Signin() {
   const router = useRouter();
 
   if (status === 'authenticated') {
-    router.push('/dashboard');
+    router.push('/workflows');
   }
 
   return (

@@ -73,7 +73,7 @@ const Header = () => {
           </h1>
           <div className="bg-muted px-4 py-2 rounded-full">
             <nav className="flex space-x-6">
-              {['Dashboard', 'Connections', 'Workflows'].map((item) => (
+              {[ 'Connections', 'Workflows'].map((item) => (
                 <button
                   key={item}
                   onClick={() => handleExit(`/${item.toLowerCase()}`)}
