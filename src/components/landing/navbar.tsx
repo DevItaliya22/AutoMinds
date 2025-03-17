@@ -9,7 +9,7 @@ const Navbar = () => {
   return (
     <header className="fixed right-0 left-0 top-0 py-4 px-4 bg-neutral-950 backdrop-blur-lg z-[100] flex items-center border-b-[1px] border-neutral-900 justify-between ">
       <aside className="flex items-center gap-[2px]">
-        <p className="text-3xl pl-[20px] font-bold text-[#fff] ">Heheheehe</p>
+        <p className="text-3xl pl-[20px] font-bold text-[#fff] ">Autominds</p>
       </aside>
       <aside className="flex items-center gap-4">
         <Link
