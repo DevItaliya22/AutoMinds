@@ -1,3 +1,4 @@
+![image](https://github.com/user-attachments/assets/9c2ccf0a-cacd-4624-97b1-babf5e13306d)
 # AutoMinds
 
 ## 🌟 Overview
